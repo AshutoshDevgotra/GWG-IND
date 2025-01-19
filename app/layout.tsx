@@ -19,12 +19,14 @@ export default function RootLayout({
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between h-16 items-center">
               <div className="flex items-center">
-                <a href="/" className="text-white text-xl font-bold">BrandCraft</a>
+                <a href="/" className="text-white text-xl font-bold">GwG</a>
               </div>
               <div className="flex items-center space-x-4">
                 <a href="/services" className="text-white hover:text-white/80">Services</a>
                 <a href="/pricing" className="text-white hover:text-white/80">Pricing</a>
                 <AuthButton />
+
+                
               </div>
             </div>
           </div>

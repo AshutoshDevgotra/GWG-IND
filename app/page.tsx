@@ -47,41 +47,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Navbar */}
-      <nav className="fixed w-full bg-white/90 backdrop-blur-sm z-50 border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center">
-              <Building2 className="h-8 w-8 text-primary" />
-              <span className="ml-2 text-xl font-bold">BrandCraft</span>
-            </div>
-            
-            {/* Desktop Menu */}
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#services" className="text-gray-600 hover:text-primary">Services</a>
-              <a href="#testimonials" className="text-gray-600 hover:text-primary">Testimonials</a>
-              <Button>Contact Us</Button>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <div className="md:hidden">
-              <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-              <a href="#services" className="block px-3 py-2 text-gray-600">Services</a>
-              <a href="#testimonials" className="block px-3 py-2 text-gray-600">Testimonials</a>
-              <Button className="w-full mt-2">Contact Us</Button>
-            </div>
-          </div>
-        )}
-      </nav>
+     
 
       {/* Hero Section with Slider */}
       <div className="relative h-[600px] w-full">
@@ -177,7 +143,7 @@ export default function HomePage() {
             <div>
               <div className="flex items-center mb-4">
                 <Building2 className="h-8 w-8" />
-                <span className="ml-2 text-xl font-bold">BrandCraft</span>
+                <span className="ml-2 text-xl font-bold">GwG</span>
               </div>
               <p className="text-gray-400">Transform your brand with our innovative solutions.</p>
             </div>
@@ -200,13 +166,13 @@ export default function HomePage() {
             <div>
               <h3 className="text-lg font-semibold mb-4">Connect</h3>
               <div className="flex space-x-4">
-                <a href="#" className="text-gray-400 hover:text-white">
+                <a href="" className="text-gray-400 hover:text-white">
                   <Twitter className="h-6 w-6" />
                 </a>
-                <a href="#" className="text-gray-400 hover:text-white">
+                <a href="https://www.linkedin.com/in/ashutosh-devgotra-284057269/" className="text-gray-400 hover:text-white">
                   <Linkedin className="h-6 w-6" />
                 </a>
-                <a href="#" className="text-gray-400 hover:text-white">
+                <a href="https://github.com/AshutoshDevgotra" className="text-gray-400 hover:text-white">
                   <Github className="h-6 w-6" />
                 </a>
               </div>
