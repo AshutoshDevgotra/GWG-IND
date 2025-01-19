@@ -14,7 +14,7 @@ import { LogIn, LogOut } from "lucide-react";
 declare global {
   interface Window {
     Razorpay: any;
-    recaptchaVerifier: any;
+    recaptchaVerifier: RecaptchaVerifier | null;
     confirmationResult: any;
   }
 }
@@ -149,7 +149,7 @@ export default function ServicesPage() {
       window.confirmationResult = await signInWithPhoneNumber(
         auth,
         formattedPhone,
-        window.recaptchaVerifier
+        window.recaptchaVerifier as RecaptchaVerifier
       );
       toast.success('Verification code sent!');
     } catch (error: any) {
@@ -245,86 +245,7 @@ export default function ServicesPage() {
       {/* Header */}
       <div className="bg-primary pt-24 pb-32 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex justify-between items-center mb-8">
-            <div></div>
-            {user ? (
-              <Button 
-                variant="outline" 
-                className="text-white border-white hover:bg-white/10"
-                onClick={handleSignOut}
-                disabled={loading}
-              >
-                <LogOut className="w-4 h-4 mr-2" />
-                {loading ? 'Signing out...' : 'Sign Out'}
-              </Button>
-            ) : (
-              <Dialog open={isAuthDialogOpen} onOpenChange={setIsAuthDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button variant="outline" className="text-white border-white hover:bg-white/10">
-                    <LogIn className="w-4 h-4 mr-2" />
-                    Sign In
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Sign In</DialogTitle>
-                  </DialogHeader>
-                  <Tabs defaultValue="google">
-                    <TabsList className="grid w-full grid-cols-2">
-                      <TabsTrigger value="google">Google</TabsTrigger>
-                      <TabsTrigger value="phone">Phone</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="google" className="mt-4">
-                      <Button 
-                        onClick={handleGoogleSignIn} 
-                        className="w-full"
-                        disabled={loading}
-                      >
-                        {loading ? 'Signing in...' : 'Continue with Google'}
-                      </Button>
-                    </TabsContent>
-                    <TabsContent value="phone" className="mt-4">
-                      {!window.confirmationResult ? (
-                        <div className="space-y-4">
-                          <Input
-                            type="tel"
-                            placeholder="Enter 10-digit phone number"
-                            value={phoneNumber}
-                            onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                            disabled={loading}
-                          />
-                          <Button 
-                            onClick={handlePhoneSignIn} 
-                            className="w-full"
-                            disabled={loading || phoneNumber.length !== 10}
-                          >
-                            {loading ? 'Sending...' : 'Send Code'}
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="space-y-4">
-                          <Input
-                            type="text"
-                            placeholder="Enter 6-digit verification code"
-                            value={verificationCode}
-                            onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                            disabled={loading}
-                          />
-                          <Button 
-                            onClick={handleVerifyCode} 
-                            className="w-full"
-                            disabled={loading || verificationCode.length !== 6}
-                          >
-                            {loading ? 'Verifying...' : 'Verify Code'}
-                          </Button>
-                        </div>
-                      )}
-                    </TabsContent>
-                  </Tabs>
-                </DialogContent>
-              </Dialog>
-            )}
-          </div>
+          
           <div className="text-center">
             <h1 className="text-4xl font-bold text-white mb-4">
               Our Services
