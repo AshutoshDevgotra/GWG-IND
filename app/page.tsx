@@ -160,7 +160,7 @@ export default function HomePage() {
               <ul className="space-y-2 text-gray-400">
                 <li>About Us</li>
                 <li>Careers</li>
-                <li>Contact</li>
+                <a href="/contact"><li>Contact</li></a>
               </ul>
             </div>
             <div>
