@@ -142,7 +142,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center mb-4">
-                <Building2 className="h-8 w-8" />
+                
                 <span className="ml-2 text-xl font-bold">GwG</span>
               </div>
               <p className="text-gray-400">Transform your brand with our innovative solutions.</p>
