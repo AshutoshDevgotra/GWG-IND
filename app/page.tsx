@@ -67,7 +67,9 @@ export default function HomePage() {
                   <div className="text-white">
                     <h1 className="text-5xl font-bold mb-4">Transform Your Brand</h1>
                     <p className="text-xl mb-8">Innovative solutions for brand building, marketing, and AI integration</p>
-                    <Button size="lg">Get Started <ChevronRight className="ml-2" /></Button>
+                    <a href="/experts">
+                      <Button size="lg">Get Started <ChevronRight className="ml-2" /></Button>
+                    </a>
                   </div>
                 </div>
               </div>
