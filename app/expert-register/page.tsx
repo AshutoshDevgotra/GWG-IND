@@ -16,7 +16,21 @@ export default function ExpertRegisterPage() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   
-  const [formData, setFormData] = useState({
+  const [preview, setPreview] = useState<string | null>(null);
+  const [formData, setFormData] = useState<{
+    name: string;
+    title: string;
+    image: string | File;
+    rating: number;
+    reviews: number;
+    expertise: string[];
+    experience: string;
+    price: number;
+    availability: string;
+    bio: string;
+    email: string;
+    phone: string;
+  }>({
     name: '',
     title: '',
     image: '',
@@ -159,17 +173,36 @@ export default function ExpertRegisterPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Profile Image URL
-              </label>
-              <Input
-                required
-                name="image"
-                value={formData.image}
-                onChange={handleInputChange}
-                placeholder="https://example.com/your-image.jpg"
-              />
-            </div>
+  <label className="block text-sm font-medium text-gray-700 mb-2">
+    Profile Image
+  </label>
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(e) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        const fileURL = URL.createObjectURL(file);
+        setFormData((prev) => ({
+          ...prev,
+          image: file,
+        }));
+        setPreview(fileURL); // For displaying the preview
+      }
+    }}
+    className="block w-full text-sm text-gray-700 border border-gray-300 rounded-md cursor-pointer focus:outline-none focus:ring-primary focus:border-primary"
+  />
+  {preview && (
+    <div className="mt-4">
+      <img
+        src={preview}
+        alt="Profile Preview"
+        className="h-32 w-32 rounded-full object-cover"
+      />
+    </div>
+  )}
+</div>
+
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
