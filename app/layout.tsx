@@ -24,6 +24,7 @@ export default function RootLayout({
               <div className="flex items-center space-x-4">
                 <a href="/services" className="text-white hover:text-white/80">Services</a>
                 <a href="/pricing" className="text-white hover:text-white/80">Pricing</a>
+                <a href="/experts" className="text-white hover:text-white/80">Experts</a>
                 <AuthButton />
 
                 
