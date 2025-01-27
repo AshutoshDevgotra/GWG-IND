@@ -59,7 +59,7 @@ export default function ExpertRegisterPage() {
   }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0] || null
     setImageFile(file)
     if (file) {
       setFormData((prev) => ({ ...prev, image: file.name }))
