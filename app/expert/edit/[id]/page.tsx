@@ -263,3 +263,9 @@ export default function EditExpertPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
+
+export async function generateStaticParams() {
+  // Replace with logic to fetch IDs dynamically
+  const ids = ["1", "2", "3"]; // Example static IDs
+  return ids.map((id) => ({ id }));
+}
