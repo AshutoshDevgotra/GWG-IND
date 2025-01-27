@@ -1,6 +1,6 @@
 // app/expert/edit/[id]/page.tsx
 
-
+"use client";
 import { useState, useEffect, Key } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -264,8 +264,4 @@ export default function EditExpertPage({ params }: { params: { id: string } }) {
   );
 }
 
-export async function generateStaticParams() {
-  // Replace with logic to fetch IDs dynamically
-  const ids = ["1", "2", "3"]; // Example static IDs
-  return ids.map((id) => ({ id }));
-}
+// Remove the generateStaticParams function as this is a client component
