@@ -1,5 +1,5 @@
 // app/expert/edit/[id]/page.tsx
-"use client";
+
 
 import { useState, useEffect, Key } from "react";
 import { useRouter } from "next/navigation";
