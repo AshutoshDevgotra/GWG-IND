@@ -3,58 +3,38 @@
 import { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Video as VideoCall, PhoneCall, Calendar, Star, Award, Briefcase, Clock, Users, LogIn } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Video as VideoCall, PhoneCall, Calendar, Star, Award, Briefcase, Clock, Users } from "lucide-react";
 import { toast } from "sonner";
 import { VideoRoom } from '@/components/video-room';
-import { auth } from '@/lib/firebase';
+import { auth, db } from '@/lib/firebase';
 import { User } from 'firebase/auth';
-import { AuthButton } from '@/components/auth-button';
+import { collection, getDocs } from 'firebase/firestore';
 
-const experts = [
-  {
-    id: 1,
-    name: "Dr. Sarah Johnson",
-    title: "Brand Strategy Expert",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150&h=150",
-    rating: 4.9,
-    reviews: 128,
-    expertise: ["Brand Development", "Market Analysis", "Growth Strategy"],
-    experience: "12+ years",
-    price: 50,
-    availability: "Available Now"
-  },
-  {
-    id: 2,
-    name: "Michael Chen",
-    title: "Digital Marketing Specialist",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=150&h=150",
-    rating: 4.8,
-    reviews: 93,
-    expertise: ["SEO", "Content Strategy", "Social Media"],
-    experience: "8+ years",
-    price: 50,
-    availability: "Available in 30 mins"
-  },
-  {
-    id: 3,
-    name: "Emma Williams",
-    title: "UI/UX Design Consultant",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=150&h=150",
-    rating: 4.7,
-    reviews: 156,
-    expertise: ["User Experience", "Interface Design", "Prototyping"],
-    experience: "10+ years",
-    price: 50,
-    availability: "Available Now"
-  }
-];
+interface Expert {
+  id: string;
+  name: string;
+  title: string;
+  image: string;
+  rating: number;
+  reviews: number;
+  expertise: string[];
+  experience: string;
+  price: number;
+  availability: string;
+  bio: string;
+  email: string;
+  phone: string;
+  userId: string;
+  createdAt: string;
+}
 
 export default function ExpertsPage() {
-  const [selectedExpert, setSelectedExpert] = useState<typeof experts[0] | null>(null);
+  const [experts, setExperts] = useState<Expert[]>([]);
+  const [selectedExpert, setSelectedExpert] = useState<Expert | null>(null);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -63,19 +43,61 @@ export default function ExpertsPage() {
     return () => unsubscribe();
   }, []);
 
-  const handleBooking = (expert: typeof experts[0]) => {
+  useEffect(() => {
+    const fetchExperts = async () => {
+      try {
+        const expertsCollection = collection(db, 'experts');
+        const expertsSnapshot = await getDocs(expertsCollection);
+        const expertsData = expertsSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        })) as Expert[];
+        
+        setExperts(expertsData);
+      } catch (error) {
+        console.error('Error fetching experts:', error);
+        toast.error('Failed to load experts');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExperts();
+  }, []);
+
+  const handleBooking = async (expert: Expert) => {
     if (!user) {
       toast.error('Please sign in to book a call');
-      setIsAuthDialogOpen(true);
       return;
     }
-    toast.success(`Booking confirmed with ${expert.name}! Check your email for details.`);
+  
+    try {
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: user.email,
+          expertName: expert.name,
+          time: '10:00 AM, 25th Jan', // Replace with dynamic time if applicable
+        }),
+      });
+  
+      if (response.ok) {
+        toast.success(`Booking confirmed with ${expert.name}! Check your email for details.`);
+      } else {
+        toast.error('Failed to send booking confirmation email');
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('An error occurred while booking');
+    }
   };
 
-  const startVideoCall = (expert: typeof experts[0]) => {
+  const startVideoCall = (expert: Expert) => {
     if (!user) {
       toast.error('Please sign in to start a video call');
-      setIsAuthDialogOpen(true);
       return;
     }
     setSelectedExpert(expert);
@@ -87,11 +109,6 @@ export default function ExpertsPage() {
       {/* Header */}
       <div className="bg-primary pt-24 pb-32 mb-24 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          {!user && (
-            <div className="flex justify-end mb-8">
-             
-            </div>
-          )}
           <div className="text-center">
             <h1 className="text-4xl font-bold text-white mb-4">
               Connect with Industry Experts
@@ -106,88 +123,99 @@ export default function ExpertsPage() {
 
       {/* Expert Cards */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 pb-24">
-        <div className="grid md:grid-cols-3 gap-8">
-          {experts.map((expert) => (
-            <Card key={expert.id} className="bg-white overflow-hidden">
-              <div className="p-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center">
-                    <img
-                      src={expert.image}
-                      alt={expert.name}
-                      className="w-16 h-16 rounded-full object-cover"
-                    />
-                    <div className="ml-4">
-                      <h3 className="text-lg font-semibold">{expert.name}</h3>
-                      <p className="text-sm text-gray-600">{expert.title}</p>
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading experts...</p>
+          </div>
+        ) : experts.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-600">No experts available at the moment.</p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-3 gap-8">
+            {experts.map((expert) => (
+              <Card key={expert.id} className="bg-white overflow-hidden">
+                <div className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center">
+                      <img
+                        src={expert.image}
+                        alt={expert.name}
+                        className="w-16 h-16 rounded-full object-cover"
+                      />
+                      <div className="ml-4">
+                        <h3 className="text-lg font-semibold">{expert.name}</h3>
+                        <p className="text-sm text-gray-600">{expert.title}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <Star className="w-4 h-4 text-yellow-400" fill="currentColor" />
+                      <span className="ml-1 text-sm font-medium">{expert.rating}</span>
                     </div>
                   </div>
-                  <div className="flex items-center">
-                    <Star className="w-4 h-4 text-yellow-400" fill="currentColor" />
-                    <span className="ml-1 text-sm font-medium">{expert.rating}</span>
-                  </div>
-                </div>
 
-                <div className="mt-6 space-y-4">
-                  <div className="flex items-center text-sm">
-                    <Award className="w-4 h-4 mr-2 text-primary" />
-                    <span>Top rated expert with {expert.reviews} reviews</span>
+                  <div className="mt-6 space-y-4">
+                    <div className="flex items-center text-sm">
+                      <Award className="w-4 h-4 mr-2 text-primary" />
+                      <span>Top rated expert with {expert.reviews} reviews</span>
+                    </div>
+                    <div className="flex items-center text-sm">
+                      <Briefcase className="w-4 h-4 mr-2 text-primary" />
+                      <span>{expert.experience} experience</span>
+                    </div>
+                    <div className="flex items-center text-sm">
+                      <Clock className="w-4 h-4 mr-2 text-primary" />
+                      <span>{expert.availability}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center text-sm">
-                    <Briefcase className="w-4 h-4 mr-2 text-primary" />
-                    <span>{expert.experience} experience</span>
-                  </div>
-                  <div className="flex items-center text-sm">
-                    <Clock className="w-4 h-4 mr-2 text-primary" />
-                    <span>{expert.availability}</span>
-                  </div>
-                </div>
 
-                <div className="mt-6">
-                  <h4 className="text-sm font-medium mb-2">Expertise</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {expert.expertise.map((skill, index) => (
-                      <span
-                        key={index}
-                        className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs"
+                  <div className="mt-6">
+                    <h4 className="text-sm font-medium mb-2">Expertise</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {expert.expertise.map((skill, index) => (
+                        <span
+                          key={index}
+                          className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-6 space-y-3">
+                    <Button
+                      className="w-full flex items-center justify-center"
+                      onClick={() => handleBooking(expert)}
+                    >
+                      <Calendar className="w-4 h-4 mr-2" />
+                      Book 5min Call (₹{expert.price})
+                    </Button>
+                    
+                    <div className="grid grid-cols-2 gap-3">
+                      <Button
+                        variant="outline"
+                        className="flex items-center justify-center"
+                        onClick={() => startVideoCall(expert)}
                       >
-                        {skill}
-                      </span>
-                    ))}
+                        <VideoCall className="w-4 h-4 mr-2" />
+                        Video Call
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="flex items-center justify-center"
+                      >
+                        <PhoneCall className="w-4 h-4 mr-2" />
+                        Voice Call
+                      </Button>
+                    </div>
                   </div>
                 </div>
-
-                <div className="mt-6 space-y-3">
-                  <Button
-                    className="w-full flex items-center justify-center"
-                    onClick={() => handleBooking(expert)}
-                  >
-                    <Calendar className="w-4 h-4 mr-2" />
-                    Book 5min Call (₹{expert.price})
-                  </Button>
-                  
-                  <div className="grid grid-cols-2 gap-3">
-                    <Button
-                      variant="outline"
-                      className="flex items-center justify-center"
-                      onClick={() => startVideoCall(expert)}
-                    >
-                      <VideoCall className="w-4 h-4 mr-2" />
-                      Video Call
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="flex items-center justify-center"
-                    >
-                      <PhoneCall className="w-4 h-4 mr-2" />
-                      Voice Call
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Video Call Modal */}
@@ -198,7 +226,7 @@ export default function ExpertsPage() {
           </DialogHeader>
           {selectedExpert && (
             <div className="aspect-video">
-              <VideoRoom expertId={selectedExpert.id.toString()} />
+              <VideoRoom expertId={selectedExpert.id} />
             </div>
           )}
         </DialogContent>
