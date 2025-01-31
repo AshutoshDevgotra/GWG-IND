@@ -139,11 +139,11 @@ export default function ExpertsPage() {
                 <div className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center">
-                      <img
-                        src={expert.image}
-                        alt={expert.name}
-                        className="w-16 h-16 rounded-full object-cover"
-                      />
+                    <img
+  src={expert.image}
+  alt={expert.name}
+  className="w-16 h-16 rounded-full object-cover border-2 border-primary"
+/>
                       <div className="ml-4">
                         <h3 className="text-lg font-semibold">{expert.name}</h3>
                         <p className="text-sm text-gray-600">{expert.title}</p>
