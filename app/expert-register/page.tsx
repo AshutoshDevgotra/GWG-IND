@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, type ChangeEvent, type MouseEvent } from "react"
+import { useState, useEffect, type ChangeEvent, type FormEvent } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -11,33 +11,118 @@ import { db, auth, storage } from "@/lib/firebase"
 import { collection, addDoc, doc, deleteDoc, updateDoc, getDocs, query, where } from "firebase/firestore"
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import type { User } from "firebase/auth"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Edit2, Trash2 } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
+type College = {
+  type: string
+  name: string
+  shortName: string
+}
+
+interface FormData {
+  name: string
+  institutionType: string
+  college: string
+  branch: string
+  year: string
+  collegeEmail: string
+  aadharNumber: string
+  bio: string
+  expertise: string[]
+  experience: string
+  price: number
+  phone: string
+  title: string
+  availability: string
+  email?: string
+}
+
+const INSTITUTION_TYPES = ["IIT", "NIT", "IIIT", "AIIMS"]
+
+const COLLEGES: College[] = [
+  // IITs
+  { type: "IIT", name: "Indian Institute of Technology Bombay", shortName: "IIT Bombay" },
+  { type: "IIT", name: "Indian Institute of Technology Delhi", shortName: "IIT Delhi" },
+  { type: "IIT", name: "Indian Institute of Technology Madras", shortName: "IIT Madras" },
+  { type: "IIT", name: "Indian Institute of Technology Kanpur", shortName: "IIT Kanpur" },
+  { type: "IIT", name: "Indian Institute of Technology Kharagpur", shortName: "IIT Kharagpur" },
+  { type: "IIT", name: "Indian Institute of Technology Roorkee", shortName: "IIT Roorkee" },
+  { type: "IIT", name: "Indian Institute of Technology Guwahati", shortName: "IIT Guwahati" },
+  { type: "IIT", name: "Indian Institute of Technology Hyderabad", shortName: "IIT Hyderabad" },
+  { type: "IIT", name: "Indian Institute of Technology Indore", shortName: "IIT Indore" },
+  { type: "IIT", name: "Indian Institute of Technology Patna", shortName: "IIT Patna" },
+  // Add more IITs as needed
+
+  // NITs
+  { type: "NIT", name: "National Institute of Technology Tiruchirappalli", shortName: "NIT Trichy" },
+  { type: "NIT", name: "National Institute of Technology Rourkela", shortName: "NIT Rourkela" },
+  { type: "NIT", name: "National Institute of Technology Warangal", shortName: "NIT Warangal" },
+  { type: "NIT", name: "National Institute of Technology Calicut", shortName: "NIT Calicut" },
+  { type: "NIT", name: "National Institute of Technology Surathkal", shortName: "NIT Surathkal" },
+  // Add more NITs as needed
+
+  // IIITs
+  { type: "IIIT", name: "Indian Institute of Information Technology Allahabad", shortName: "IIIT Allahabad" },
+  { type: "IIIT", name: "Indian Institute of Information Technology Gwalior", shortName: "IIIT Gwalior" },
+  { type: "IIIT", name: "Indian Institute of Information Technology Jabalpur", shortName: "IIIT Jabalpur" },
+  // Add more IIITs as needed
+
+  // AIIMS
+  { type: "AIIMS", name: "All India Institute of Medical Sciences, New Delhi", shortName: "AIIMS Delhi" },
+  { type: "AIIMS", name: "All India Institute of Medical Sciences, Bhopal", shortName: "AIIMS Bhopal" },
+  { type: "AIIMS", name: "All India Institute of Medical Sciences, Bhubaneswar", shortName: "AIIMS Bhubaneswar" },
+  // Add more AIIMS as needed
+]
+
+const BRANCHES = [
+  "Computer Science and Engineering",
+  "Electronics and Communication Engineering",
+  "Mechanical Engineering",
+  "Civil Engineering",
+  "Electrical Engineering",
+  "Chemical Engineering",
+  "Aerospace Engineering",
+  "Biotechnology",
+  "Metallurgical and Materials Engineering",
+  "Production and Industrial Engineering",
+  "Engineering Physics",
+  "Engineering Mathematics",
+  "MBBS",
+  "BDS",
+  "B.Pharm",
+  // Add more branches as needed
+]
 
 export default function ExpertRegisterPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [user, setUser] = useState<User | null>(null)
+  const [selectedInstitutionType, setSelectedInstitutionType] = useState<string | null>(null)
+  const [selectedCollege, setSelectedCollege] = useState<College | null>(null)
+  const [emailVerificationSent, setEmailVerificationSent] = useState(false)
+  const [formErrors, setFormErrors] = useState<{ collegeEmail?: string }>({})
+  const [showExpertForm, setShowExpertForm] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [expertDocId, setExpertDocId] = useState<string | null>(null)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [imageFile, setImageFile] = useState<File | null>(null)
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: "",
-    title: "",
-    image: "",
-    rating: 5.0,
-    reviews: 0,
+    institutionType: "",
+    college: "",
+    branch: "",
+    year: "",
+    collegeEmail: "",
+    aadharNumber: "",
+    bio: "",
     expertise: [""],
     experience: "",
     price: 50,
-    availability: "Available Now",
-    bio: "",
-    email: "",
     phone: "",
+    title: "",
+    availability: "Available Now",
   })
-
-  const [imageFile, setImageFile] = useState<File | null>(null)
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -117,53 +202,53 @@ export default function ExpertRegisterPage() {
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
-    if (!user) {
-      toast.error("Please sign in to register as an expert")
-      return
-    }
-
-    if (isEditMode) {
-      await handleUpdate(e)
-      return
-    }
+    setLoading(true)
 
     try {
-      setLoading(true)
+      if (!emailVerificationSent) {
+        // Validate email
+        if (!validateCollegeEmail(formData.collegeEmail)) {
+          setFormErrors({
+            collegeEmail: `Please use your official ${selectedCollege?.shortName} email address`,
+          })
+          return
+        }
 
-      let imageUrl = ""
+        setEmailVerificationSent(true)
+        toast.success("Verification email sent!")
+        setShowExpertForm(true)
+      } else {
+        // Handle image upload
+        let imageUrl = ""
+        if (imageFile) {
+          const imageRef = ref(storage, `experts/${imageFile.name}`)
+          await uploadBytes(imageRef, imageFile)
+          imageUrl = await getDownloadURL(imageRef)
+        }
 
-      // Handle image upload if file exists
-      if (imageFile) {
-        const imageRef = ref(storage, `experts/${imageFile.name}`)
-        await uploadBytes(imageRef, imageFile)
-        imageUrl = await getDownloadURL(imageRef)
+        // Save expert data to Firestore
+        const expertData = {
+          ...formData,
+          image: imageUrl,
+          createdAt: new Date().toISOString(),
+        }
+
+        await addDoc(collection(db, "experts"), expertData)
+
+        toast.success("Expert profile created successfully!")
+        router.push("/experts")
       }
-
-      const expertData = {
-        ...formData,
-        userId: user.uid,
-        createdAt: new Date().toISOString(),
-        image: imageUrl || formData.image,
-        expertise: formData.expertise.filter((exp) => exp.trim() !== ""),
-      }
-
-      const docRef = await addDoc(collection(db, "experts"), expertData)
-      setExpertDocId(docRef.id)
-
-      toast.success("Expert profile created successfully!")
-      router.push("/experts")
     } catch (error) {
-      console.error("Error creating expert profile:", error)
-      toast.error("Failed to create expert profile. Please try again.")
+      console.error(error)
+      toast.error("An error occurred. Please try again.")
     } finally {
       setLoading(false)
     }
   }
 
-  function handleInputChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>): void {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>): void => {
     const { name, value } = event.target
     setFormData((prev) => ({
       ...prev,
@@ -171,278 +256,286 @@ export default function ExpertRegisterPage() {
     }))
   }
 
-  function handleImageChange(event: ChangeEvent<HTMLInputElement>): void {
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
       setImageFile(file)
-      setFormData((prev) => ({ ...prev, image: file.name }))
     }
   }
 
-  function handleExpertiseChange(index: number, value: string): void {
+  const handleExpertiseChange = (index: number, value: string) => {
     const updatedExpertise = [...formData.expertise]
     updatedExpertise[index] = value
     setFormData((prev) => ({ ...prev, expertise: updatedExpertise }))
   }
 
-  function removeExpertiseField(index: number): void {
+  const removeExpertiseField = (index: number) => {
     const updatedExpertise = [...formData.expertise]
     updatedExpertise.splice(index, 1)
     setFormData((prev) => ({ ...prev, expertise: updatedExpertise }))
   }
 
-  function addExpertiseField(event: MouseEvent<HTMLButtonElement>): void {
-    event.preventDefault()
+  const addExpertiseField = () => {
     setFormData((prev) => ({ ...prev, expertise: [...prev.expertise, ""] }))
   }
 
+  const validateCollegeEmail = (email: string): boolean => {
+    // Add your email validation logic here
+    // This is a placeholder, replace with your actual validation
+    return email.includes("@")
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {expertDocId && (
-        <div className="absolute top-[98px] right-4 flex gap-2 z-30">
-          <Button onClick={handleEdit} variant="outline" className="flex items-center gap-2">
-            <Edit2 className="w-4 h-4" />
-            Edit Profile
-          </Button>
-          <Button onClick={handleDelete} variant="destructive" className="flex items-center gap-2">
-            <Trash2 className="w-4 h-4" />
-            Delete Profile
-          </Button>
-        </div>
-      )}
-      <div className="bg-primary pt-48 pb-32 mb-[40px] relative">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+      <div className="bg-[#172554] pt-24 pb-32 mb-[40px] relative overflow-hidden">
+        <div className="absolute inset-0 bg-pattern opacity-10"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-white mb-4">
-              {expertDocId ? "Your Expert Profile" : "Register as an Expert"}
-            </h1>
+            <h1 className="text-4xl font-bold text-white mb-4">Expert Registration</h1>
             <p className="text-xl text-white/80 max-w-2xl mx-auto">
-              Share your expertise and connect with clients worldwide
+              Share your expertise from India's premier institutions
             </p>
           </div>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-transparent"></div>
       </div>
 
-      {!expertDocId && (
-        <div className="max-w-3xl mx-auto mt-8 px-4 sm:px-6 lg:px-8">
-          <Card className="p-6">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-2 gap-6">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 pb-24">
+        <Card className="p-8 shadow-lg">
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {!showExpertForm ? (
+              // Institution Details Form
+              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                <h2 className="text-xl font-semibold mb-6 text-gray-800">Institution Details</h2>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                  <Input
-                    required
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    placeholder="John Doe"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Professional Title</label>
-                  <Input
-                    required
-                    name="title"
-                    value={formData.title}
-                    onChange={handleInputChange}
-                    placeholder="Brand Strategy Expert"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Profile Image</label>
-                <Input type="file" accept="image/*" onChange={handleImageChange} className="text-sm" />
-              </div>
-
-              {/* Expertise Fields */}
-              <div className="space-y-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Expertise</label>
-                {formData.expertise.map((expertise, index) => (
-                  <div key={index} className="flex gap-4 items-center">
-                    <Input
-                      value={expertise}
-                      onChange={(e) => handleExpertiseChange(index, e.target.value)}
-                      placeholder="e.g., Web Development"
-                      className="flex-1"
-                    />
-                    <button type="button" className="text-red-500" onClick={() => removeExpertiseField(index)}>
-                      Remove
-                    </button>
-                  </div>
-                ))}
-                <Button onClick={addExpertiseField} variant="outline">
-                  Add Expertise
-                </Button>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Experience</label>
-                <Textarea
-                  required
-                  name="experience"
-                  value={formData.experience}
-                  onChange={handleInputChange}
-                  placeholder="e.g., 5 years of experience in brand strategy"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Price per Hour</label>
-                  <Input
-                    required
-                    type="number"
-                    name="price"
-                    value={formData.price}
-                    onChange={handleInputChange}
-                    placeholder="50"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Availability</label>
-                  <select
-                    required
-                    name="availability"
-                    value={formData.availability}
-                    onChange={handleInputChange}
-                    className="block w-full text-sm py-2 px-4 rounded-md border-gray-300 focus:ring-2 focus:ring-blue-600"
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Institution Type</label>
+                  <Select
+                    name="institutionType"
+                    value={formData.institutionType}
+                    onValueChange={(value) => {
+                      setSelectedInstitutionType(value)
+                      setSelectedCollege(null)
+                      setFormData((prev) => ({
+                        ...prev,
+                        institutionType: value,
+                        college: "",
+                        branch: "",
+                        collegeEmail: "",
+                      }))
+                      setFormErrors({})
+                    }}
                   >
-                    <option value="Available Now">Available Now</option>
-                    <option value="Not Available">Not Available</option>
-                  </select>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select institution type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {INSTITUTION_TYPES.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
-                <Textarea
-                  required
-                  name="bio"
-                  value={formData.bio}
-                  onChange={handleInputChange}
-                  placeholder="A brief bio about you"
-                />
-              </div>
-
-              <div className="text-right">
-                <Button type="submit" variant="default" disabled={loading}>
-                  {loading ? "Saving..." : isEditMode ? "Update Profile" : "Create Profile"}
-                </Button>
-              </div>
-            </form>
-          </Card>
-        </div>
-      )}
-
-      {/* Render form in dialog when editing */}
-      <Dialog open={isEditMode && isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>Edit Expert Profile</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                <Input required name="name" value={formData.name} onChange={handleInputChange} placeholder="John Doe" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Professional Title</label>
-                <Input
-                  required
-                  name="title"
-                  value={formData.title}
-                  onChange={handleInputChange}
-                  placeholder="Brand Strategy Expert"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Profile Image</label>
-              <Input type="file" accept="image/*" onChange={handleImageChange} className="text-sm" />
-            </div>
-
-            {/* Expertise Fields */}
-            <div className="space-y-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Expertise</label>
-              {formData.expertise.map((expertise, index) => (
-                <div key={index} className="flex gap-4 items-center">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">College</label>
+                  <Select
+                    name="college"
+                    value={formData.college}
+                    onValueChange={(value) => {
+                      const college = COLLEGES.find((c) => c.shortName === value)
+                      setSelectedCollege(college || null)
+                      setFormData((prev) => ({
+                        ...prev,
+                        college: value,
+                        collegeEmail: "",
+                      }))
+                      setFormErrors({})
+                    }}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select your institution" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {COLLEGES.filter((college) => college.type === formData.institutionType).map((college) => (
+                        <SelectItem key={college.shortName} value={college.shortName}>
+                          {college.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Branch</label>
+                  <Select
+                    name="branch"
+                    value={formData.branch}
+                    onValueChange={(value) => setFormData((prev) => ({ ...prev, branch: value }))}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select your branch" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {BRANCHES.map((branch) => (
+                        <SelectItem key={branch} value={branch}>
+                          {branch}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Year of Graduation</label>
                   <Input
-                    value={expertise}
-                    onChange={(e) => handleExpertiseChange(index, e.target.value)}
-                    placeholder="e.g., Web Development"
-                    className="flex-1"
+                    required
+                    name="year"
+                    value={formData.year}
+                    onChange={handleInputChange}
+                    type="number"
+                    placeholder="e.g., 2023"
                   />
-                  <button type="button" className="text-red-500" onClick={() => removeExpertiseField(index)}>
-                    Remove
-                  </button>
                 </div>
-              ))}
-              <Button onClick={addExpertiseField} variant="outline">
-                Add Expertise
-              </Button>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Experience</label>
-              <Textarea
-                required
-                name="experience"
-                value={formData.experience}
-                onChange={handleInputChange}
-                placeholder="e.g., 5 years of experience in brand strategy"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Price per Hour</label>
-                <Input
-                  required
-                  type="number"
-                  name="price"
-                  value={formData.price}
-                  onChange={handleInputChange}
-                  placeholder="50"
-                />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">College Email</label>
+                  <Input
+                    required
+                    name="collegeEmail"
+                    value={formData.collegeEmail}
+                    onChange={handleInputChange}
+                    placeholder="e.g., john.doe@iitb.ac.in"
+                  />
+                  {formErrors.collegeEmail && <p className="text-red-500 text-xs mt-1">{formErrors.collegeEmail}</p>}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Aadhar Number</label>
+                  <Input
+                    required
+                    name="aadharNumber"
+                    value={formData.aadharNumber}
+                    onChange={handleInputChange}
+                    type="number"
+                    placeholder="Enter your Aadhar Number"
+                  />
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Availability</label>
-                <select
-                  required
-                  name="availability"
-                  value={formData.availability}
-                  onChange={handleInputChange}
-                  className="block w-full text-sm py-2 px-4 rounded-md border-gray-300 focus:ring-2 focus:ring-blue-600"
-                >
-                  <option value="Available Now">Available Now</option>
-                  <option value="Not Available">Not Available</option>
-                </select>
+            ) : (
+              // Expert Details Form
+              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                <h2 className="text-xl font-semibold mb-6 text-gray-800">Expert Details</h2>
+
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                    <Input
+                      required
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      placeholder="John Doe"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Professional Title</label>
+                    <Input
+                      required
+                      name="title"
+                      value={formData.title}
+                      onChange={handleInputChange}
+                      placeholder="Brand Strategy Expert"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Profile Image</label>
+                  <Input type="file" accept="image/*" onChange={handleImageChange} className="text-sm" />
+                </div>
+
+                {/* Expertise Fields */}
+                <div className="space-y-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Expertise</label>
+                  {formData.expertise.map((expertise, index) => (
+                    <div key={index} className="flex gap-4 items-center">
+                      <Input
+                        value={expertise}
+                        onChange={(e) => handleExpertiseChange(index, e.target.value)}
+                        placeholder="e.g., Web Development"
+                        className="flex-1"
+                      />
+                      <button type="button" className="text-red-500" onClick={() => removeExpertiseField(index)}>
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                  <Button onClick={addExpertiseField} variant="outline">
+                    Add Expertise
+                  </Button>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Experience</label>
+                  <Textarea
+                    required
+                    name="experience"
+                    value={formData.experience}
+                    onChange={handleInputChange}
+                    placeholder="e.g., 5 years of experience in brand strategy"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Price per Hour</label>
+                    <Input
+                      required
+                      type="number"
+                      name="price"
+                      value={formData.price}
+                      onChange={handleInputChange}
+                      placeholder="50"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Availability</label>
+                    <Select
+                      name="availability"
+                      value={formData.availability}
+                      onValueChange={(value) => setFormData((prev) => ({ ...prev, availability: value }))}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select availability" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Available Now">Available Now</SelectItem>
+                        <SelectItem value="Not Available">Not Available</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                  <Textarea
+                    required
+                    name="bio"
+                    value={formData.bio}
+                    onChange={handleInputChange}
+                    placeholder="A brief bio about you"
+                  />
+                </div>
               </div>
-            </div>
+            )}
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
-              <Textarea
-                required
-                name="bio"
-                value={formData.bio}
-                onChange={handleInputChange}
-                placeholder="A brief bio about you"
-              />
-            </div>
-
-            <div className="text-right">
-              <Button type="submit" variant="default" disabled={loading}>
-                {loading ? "Saving..." : isEditMode ? "Update Profile" : "Create Profile"}
-              </Button>
-            </div>
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              className="w-full bg-[#172554] hover:bg-[#1e3a8a]"
+              disabled={loading || Boolean(formErrors.collegeEmail)}
+            >
+              {loading ? "Processing..." : showExpertForm ? "Create Profile" : "Send Verification Email"}
+            </Button>
           </form>
-        </DialogContent>
-      </Dialog>
+        </Card>
+      </div>
     </div>
   )
 }
