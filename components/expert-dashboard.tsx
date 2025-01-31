@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, orderBy } from 'firebase/firestore';
 
 interface ChatMessage {
   id: string;
@@ -10,7 +10,7 @@ interface ChatMessage {
   timestamp: Date;
 }
 
-const ExpertDashboard = ({ expertId }) => {
+const ExpertDashboard = ({ expertId }: { expertId: string }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
   useEffect(() => {

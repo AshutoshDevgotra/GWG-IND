@@ -10,7 +10,12 @@ interface ChatMessage {
   timestamp: Date;
 }
 
-const Chat = ({ expertId, userId }) => {
+interface ChatProps {
+  expertId: string;
+  userId: string;
+}
+
+const Chat = ({ expertId, userId }: ChatProps) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
 
