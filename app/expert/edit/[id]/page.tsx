@@ -1,13 +1,14 @@
-// app/expert/edit/[id]/page.tsx
 import { Metadata } from 'next';
-import { useParams } from 'next/navigation';
+
+// Define the type for the params
 type PageProps = {
   params: {
     id: string; // ✅ Correct type for App Router
   };
 };
 
-export default function EditExpertPage({ params }: { params: { id: string } }) {
+// Main component
+export default function EditExpertPage({ params }: PageProps) {
   return <div>Editing expert ID: {params.id}</div>;
 }
 
