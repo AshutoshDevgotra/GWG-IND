@@ -217,7 +217,7 @@ export default function ServicesPage() {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: parseInt(service.price) * 100,
         currency: "INR",
-        name: "BrandCraft",
+        name: "GwG",
         description: `${service.title} Service`,
         handler: function(response: any) {
           toast.success("Payment successful! Payment ID: " + response.razorpay_payment_id);
