@@ -181,7 +181,7 @@ export default function ExpertRegisterPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-primary pt-24 pb-32 mb-[40px] relative">
+      <div className="bg-primary pt-48 pb-32 mb-[40px] relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-white mb-4">
@@ -343,7 +343,7 @@ export default function ExpertRegisterPage() {
 
       {/* Show form directly when creating new profile */}
       {!expertDocId && (
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 pb-24">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-20 pb-24">
           <Card className="p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* ... (keep all your existing form fields) ... */}
