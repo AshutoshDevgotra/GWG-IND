@@ -68,7 +68,7 @@ export default async function EditExpertPage({ params }: PageProps) {
 }
 
 // Optional: Add metadata
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   // Fetch expert data for metadata
   const expert = await getExpert(params.id);
 

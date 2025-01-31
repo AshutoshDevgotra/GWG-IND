@@ -1,9 +1,9 @@
 // types/next.d.ts
-import type { ReadonlyURLSearchParams } from "next/navigation";
+import type { ReadonlyURLSearchParams } from 'next/navigation';
 
-declare module "next" {
-  export type PageProps = {
+declare module 'next' {
+  interface PageProps {
     params?: Record<string, string>;
     searchParams?: ReadonlyURLSearchParams | Record<string, string | string[]>;
-  };
+  }
 }
