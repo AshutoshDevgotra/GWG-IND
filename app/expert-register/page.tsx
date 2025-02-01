@@ -379,25 +379,28 @@ export default function ExpertRegisterPage() {
         // Handle image upload
         let imageUrl = ""
         if (imageFile) {
-          const imageRef = ref(storage, `experts/${imageFile.name}`)
-          await uploadBytes(imageRef, imageFile)
-          imageUrl = await getDownloadURL(imageRef)
+          const imageRef = ref(storage, `experts/${user?.uid}/${imageFile.name}`)
+          const snapshot = await uploadBytes(imageRef, imageFile)
+          imageUrl = await getDownloadURL(snapshot.ref)
+          console.log("Image uploaded successfully. URL:", imageUrl)
         }
 
         // Save expert data to Firestore
         const expertData = {
           ...formData,
+          userId: user?.uid,
           image: imageUrl,
           createdAt: new Date().toISOString(),
         }
 
-        await addDoc(collection(db, "experts"), expertData)
+        const docRef = await addDoc(collection(db, "experts"), expertData)
+        console.log("Expert profile created with ID:", docRef.id)
 
         toast.success("Expert profile created successfully!")
         router.push("/experts")
       }
     } catch (error) {
-      console.error(error)
+      console.error("Error creating expert profile:", error)
       toast.error("An error occurred. Please try again.")
     } finally {
       setLoading(false)
