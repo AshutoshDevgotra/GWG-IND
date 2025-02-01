@@ -42,197 +42,193 @@ interface FormData {
 const INSTITUTION_TYPES = ["IIT", "NIT", "IIIT", "AIIMS"]
 
 const COLLEGES: College[] = [
-  
-    {
-      "type": "IIT",
-      "shortName": "IIT Bombay",
-      "name": "Indian Institute of Technology Bombay",
-      "state": "Maharashtra",
-      "emailDomain": "iitb.ac.in"
-    },
-    {
-      "type": "IIT",
-      "shortName": "IIT Delhi",
-      "name": "Indian Institute of Technology Delhi",
-      "state": "Delhi",
-      "emailDomain": "iitd.ac.in"
-    },
-    {
-      "type": "IIT",
-      "shortName": "IIT Madras",
-      "name": "Indian Institute of Technology Madras",
-      "state": "Tamil Nadu",
-      "emailDomain": "iitm.ac.in"
-    },
-    {
-      "type": "IIT",
-      "shortName": "IIT Kanpur",
-      "name": "Indian Institute of Technology Kanpur",
-      "state": "Uttar Pradesh",
-      "emailDomain": "iitk.ac.in"
-    },
-    {
-      "type": "IIT",
-      "shortName": "IIT Kharagpur",
-      "name": "Indian Institute of Technology Kharagpur",
-      "state": "West Bengal",
-      "emailDomain": "iitkgp.ac.in"
-    },
-    {
-      "type": "IIT",
-      "shortName": "IIT Roorkee",
-      "name": "Indian Institute of Technology Roorkee",
-      "state": "Uttarakhand",
-      "emailDomain": "iitr.ac.in"
-    },
-    {
-      "type": "IIT",
-      "shortName": "IIT Guwahati",
-      "name": "Indian Institute of Technology Guwahati",
-      "state": "Assam",
-      "emailDomain": "iitg.ac.in"
-    },
-    {
-      "type": "IIT",
-      "shortName": "IIT Hyderabad",
-      "name": "Indian Institute of Technology Hyderabad",
-      "state": "Telangana",
-      "emailDomain": "iith.ac.in"
-    },
-    {
-      "type": "IIT",
-      "shortName": "IIT Indore",
-      "name": "Indian Institute of Technology Indore",
-      "state": "Madhya Pradesh",
-      "emailDomain": "iiti.ac.in"
-    },
-    {
-      "type": "IIT",
-      "shortName": "IIT Bhubaneswar",
-      "name": "Indian Institute of Technology Bhubaneswar",
-      "state": "Odisha",
-      "emailDomain": "iitbbs.ac.in"
-    },
+  {
+    type: "IIT",
+    shortName: "IIT Bombay",
+    name: "Indian Institute of Technology Bombay",
+    state: "Maharashtra",
+    emailDomain: "iitb.ac.in",
+  },
+  {
+    type: "IIT",
+    shortName: "IIT Delhi",
+    name: "Indian Institute of Technology Delhi",
+    state: "Delhi",
+    emailDomain: "iitd.ac.in",
+  },
+  {
+    type: "IIT",
+    shortName: "IIT Madras",
+    name: "Indian Institute of Technology Madras",
+    state: "Tamil Nadu",
+    emailDomain: "iitm.ac.in",
+  },
+  {
+    type: "IIT",
+    shortName: "IIT Kanpur",
+    name: "Indian Institute of Technology Kanpur",
+    state: "Uttar Pradesh",
+    emailDomain: "iitk.ac.in",
+  },
+  {
+    type: "IIT",
+    shortName: "IIT Kharagpur",
+    name: "Indian Institute of Technology Kharagpur",
+    state: "West Bengal",
+    emailDomain: "iitkgp.ac.in",
+  },
+  {
+    type: "IIT",
+    shortName: "IIT Roorkee",
+    name: "Indian Institute of Technology Roorkee",
+    state: "Uttarakhand",
+    emailDomain: "iitr.ac.in",
+  },
+  {
+    type: "IIT",
+    shortName: "IIT Guwahati",
+    name: "Indian Institute of Technology Guwahati",
+    state: "Assam",
+    emailDomain: "iitg.ac.in",
+  },
+  {
+    type: "IIT",
+    shortName: "IIT Hyderabad",
+    name: "Indian Institute of Technology Hyderabad",
+    state: "Telangana",
+    emailDomain: "iith.ac.in",
+  },
+  {
+    type: "IIT",
+    shortName: "IIT Indore",
+    name: "Indian Institute of Technology Indore",
+    state: "Madhya Pradesh",
+    emailDomain: "iiti.ac.in",
+  },
+  {
+    type: "IIT",
+    shortName: "IIT Bhubaneswar",
+    name: "Indian Institute of Technology Bhubaneswar",
+    state: "Odisha",
+    emailDomain: "iitbbs.ac.in",
+  },
 
-    
-      {
-        "type": "NIT",
-        "shortName": "NIT Trichy",
-        "name": "National Institute of Technology Tiruchirappalli",
-        "state": "Tamil Nadu",
-        "emailDomain": "nitt.edu"
-      },
-      {
-        "type": "NIT",
-        "shortName": "NIT Warangal",
-        "name": "National Institute of Technology Warangal",
-        "state": "Telangana",
-        "emailDomain": "nitw.ac.in"
-      },
-      {
-        "type": "NIT",
-        "shortName": "NIT Surathkal",
-        "name": "National Institute of Technology Karnataka, Surathkal",
-        "state": "Karnataka",
-        "emailDomain": "nitk.edu.in"
-      },
-      {
-        "type": "NIT",
-        "shortName": "NIT Rourkela",
-        "name": "National Institute of Technology Rourkela",
-        "state": "Odisha",
-        "emailDomain": "nitrkl.ac.in"
-      },
-      {
-        "type": "NIT",
-        "shortName": "NIT Calicut",
-        "name": "National Institute of Technology Calicut",
-        "state": "Kerala",
-        "emailDomain": "nitc.ac.in"
-      },
-      {
-        "type": "NIT",
-        "shortName": "NIT Nagpur",
-        "name": "Visvesvaraya National Institute of Technology",
-        "state": "Maharashtra",
-        "emailDomain": "vnit.ac.in"
-      },
-      {
-        "type": "NIT",
-        "shortName": "NIT Jaipur",
-        "name": "Malaviya National Institute of Technology Jaipur",
-        "state": "Rajasthan",
-        "emailDomain": "mnit.ac.in"
-      },
-      {
-        "type": "NIT",
-        "shortName": "NIT Allahabad",
-        "name": "Motilal Nehru National Institute of Technology Allahabad",
-        "state": "Uttar Pradesh",
-        "emailDomain": "mnnit.ac.in"
-      },
-      {
-        "type": "NIT",
-        "shortName": "NIT Kurukshetra",
-        "name": "National Institute of Technology Kurukshetra",
-        "state": "Haryana",
-        "emailDomain": "nitkkr.ac.in"
-      },
-      {
-        "type": "NIT",
-        "shortName": "NIT Durgapur",
-        "name": "National Institute of Technology Durgapur",
-        "state": "West Bengal",
-        "emailDomain": "nitdgp.ac.in"
-      },
-      
-        {
-          "type": "AIIMS",
-          "shortName": "AIIMS Delhi",
-          "name": "All India Institute of Medical Sciences Delhi",
-          "state": "Delhi",
-          "emailDomain": "aiims.edu"
-        },
-        {
-          "type": "AIIMS",
-          "shortName": "AIIMS Jodhpur",
-          "name": "All India Institute of Medical Sciences Jodhpur",
-          "state": "Rajasthan",
-          "emailDomain": "aiimsjodhpur.edu.in"
-        },
-        {
-          "type": "AIIMS",
-          "shortName": "AIIMS Bhubaneswar",
-          "name": "All India Institute of Medical Sciences Bhubaneswar",
-          "state": "Odisha",
-          "emailDomain": "aiimsbhubaneswar.nic.in"
-        },
-        {
-          "type": "AIIMS",
-          "shortName": "AIIMS Patna",
-          "name": "All India Institute of Medical Sciences Patna",
-          "state": "Bihar",
-          "emailDomain": "aiimspatna.org"
-        },
-        {
-          "type": "AIIMS",
-          "shortName": "AIIMS Raipur",
-          "name": "All India Institute of Medical Sciences Raipur",
-          "state": "Chhattisgarh",
-          "emailDomain": "aiimsraipur.edu.in"
-        },
-        {
-          "type": "AIIMS",
-          "shortName": "AIIMS Rishikesh",
-          "name": "All India Institute of Medical Sciences Rishikesh",
-          "state": "Uttarakhand",
-          "emailDomain": "aiimsrishikesh.edu.in"
-        }
-      ]
+  {
+    type: "NIT",
+    shortName: "NIT Trichy",
+    name: "National Institute of Technology Tiruchirappalli",
+    state: "Tamil Nadu",
+    emailDomain: "nitt.edu",
+  },
+  {
+    type: "NIT",
+    shortName: "NIT Warangal",
+    name: "National Institute of Technology Warangal",
+    state: "Telangana",
+    emailDomain: "nitw.ac.in",
+  },
+  {
+    type: "NIT",
+    shortName: "NIT Surathkal",
+    name: "National Institute of Technology Karnataka, Surathkal",
+    state: "Karnataka",
+    emailDomain: "nitk.edu.in",
+  },
+  {
+    type: "NIT",
+    shortName: "NIT Rourkela",
+    name: "National Institute of Technology Rourkela",
+    state: "Odisha",
+    emailDomain: "nitrkl.ac.in",
+  },
+  {
+    type: "NIT",
+    shortName: "NIT Calicut",
+    name: "National Institute of Technology Calicut",
+    state: "Kerala",
+    emailDomain: "nitc.ac.in",
+  },
+  {
+    type: "NIT",
+    shortName: "NIT Nagpur",
+    name: "Visvesvaraya National Institute of Technology",
+    state: "Maharashtra",
+    emailDomain: "vnit.ac.in",
+  },
+  {
+    type: "NIT",
+    shortName: "NIT Jaipur",
+    name: "Malaviya National Institute of Technology Jaipur",
+    state: "Rajasthan",
+    emailDomain: "mnit.ac.in",
+  },
+  {
+    type: "NIT",
+    shortName: "NIT Allahabad",
+    name: "Motilal Nehru National Institute of Technology Allahabad",
+    state: "Uttar Pradesh",
+    emailDomain: "mnnit.ac.in",
+  },
+  {
+    type: "NIT",
+    shortName: "NIT Kurukshetra",
+    name: "National Institute of Technology Kurukshetra",
+    state: "Haryana",
+    emailDomain: "nitkkr.ac.in",
+  },
+  {
+    type: "NIT",
+    shortName: "NIT Durgapur",
+    name: "National Institute of Technology Durgapur",
+    state: "West Bengal",
+    emailDomain: "nitdgp.ac.in",
+  },
 
-    
-  // ... continue for all other colleges
+  {
+    type: "AIIMS",
+    shortName: "AIIMS Delhi",
+    name: "All India Institute of Medical Sciences Delhi",
+    state: "Delhi",
+    emailDomain: "aiims.edu",
+  },
+  {
+    type: "AIIMS",
+    shortName: "AIIMS Jodhpur",
+    name: "All India Institute of Medical Sciences Jodhpur",
+    state: "Rajasthan",
+    emailDomain: "aiimsjodhpur.edu.in",
+  },
+  {
+    type: "AIIMS",
+    shortName: "AIIMS Bhubaneswar",
+    name: "All India Institute of Medical Sciences Bhubaneswar",
+    state: "Odisha",
+    emailDomain: "aiimsbhubaneswar.nic.in",
+  },
+  {
+    type: "AIIMS",
+    shortName: "AIIMS Patna",
+    name: "All India Institute of Medical Sciences Patna",
+    state: "Bihar",
+    emailDomain: "aiimspatna.org",
+  },
+  {
+    type: "AIIMS",
+    shortName: "AIIMS Raipur",
+    name: "All India Institute of Medical Sciences Raipur",
+    state: "Chhattisgarh",
+    emailDomain: "aiimsraipur.edu.in",
+  },
+  {
+    type: "AIIMS",
+    shortName: "AIIMS Rishikesh",
+    name: "All India Institute of Medical Sciences Rishikesh",
+    state: "Uttarakhand",
+    emailDomain: "aiimsrishikesh.edu.in",
+  },
+]
 
+// ... continue for all other colleges
 
 const BRANCHES = [
   "Computer Science and Engineering",
@@ -420,6 +416,7 @@ export default function ExpertRegisterPage() {
     const file = event.target.files?.[0]
     if (file) {
       setImageFile(file)
+      console.log("Image file selected:", file.name)
     }
   }
 
