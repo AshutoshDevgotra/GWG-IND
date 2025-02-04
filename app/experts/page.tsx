@@ -182,8 +182,8 @@ export default function ExpertsPage() {
         </motion.div>
       </div>
 
-      {/* Expert Cards */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+     
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
         {loading ? (
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-900 mx-auto"></div>
@@ -207,7 +207,7 @@ export default function ExpertsPage() {
                     <div className="flex items-start justify-between">
                       <div className="flex items-center">
                         <img
-                          src={expert.image || "https://ui-avatars.com/api/?name=" + encodeURIComponent(expert.name)}
+                          src={expert.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(expert.name)}`}
                           alt={expert.name}
                           className="w-16 h-16 rounded-full object-cover border-2 border-blue-900 group-hover:scale-110 transition-transform duration-300"
                         />
@@ -221,8 +221,14 @@ export default function ExpertsPage() {
                         <span className="ml-1 text-sm font-medium">{expert.rating}</span>
                       </div>
                     </div>
-
-                    {/* Rest of the card content remains the same */}
+                    <p className="mt-4 text-sm text-gray-700">{expert.bio}</p>
+                    <p className="mt-2 text-sm text-gray-600">Expertise: {expert.expertise.join(", ")}</p>
+                    <p className="mt-2 text-sm text-gray-600">Experience: {expert.experience}</p>
+                    <p className="mt-2 text-sm text-gray-600">Price: ₹{expert.price}/session</p>
+                    <div className="mt-4 flex gap-3">
+                      <Button variant="outline" onClick={() => setSelectedExpert(expert)}>View Details</Button>
+                      <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setIsVideoModalOpen(true)}>Book Session</Button>
+                    </div>
                   </div>
                 </Card>
               </motion.div>
@@ -230,8 +236,7 @@ export default function ExpertsPage() {
           </div>
         )}
       </div>
-
-      {/* Keep existing Dialog and Why Choose Us section */}
     </div>
-  )
-}
+
+      )
+    }

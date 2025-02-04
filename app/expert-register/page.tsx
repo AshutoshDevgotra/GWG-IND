@@ -262,6 +262,8 @@ export default function ExpertRegisterPage() {
   const [expertDocId, setExpertDocId] = useState<string | null>(null)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [imageFile, setImageFile] = useState<File | null>(null)
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null)
+  const [idCardImageFile, setIdCardImageFile] = useState<File | null>(null)
 
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -376,20 +378,30 @@ export default function ExpertRegisterPage() {
         toast.success("Verification email sent!")
         setShowExpertForm(true)
       } else {
-        // Handle image upload
-        let imageUrl = ""
-        if (imageFile) {
-          const imageRef = ref(storage, `experts/${user?.uid}/${imageFile.name}`)
-          const snapshot = await uploadBytes(imageRef, imageFile)
-          imageUrl = await getDownloadURL(snapshot.ref)
-          console.log("Image uploaded successfully. URL:", imageUrl)
+        // Handle image uploads
+        let profileImageUrl = ""
+        let idCardImageUrl = ""
+
+        if (profileImageFile) {
+          const profileImageRef = ref(storage, `experts/${user?.uid}/profile_${profileImageFile.name}`)
+          const profileSnapshot = await uploadBytes(profileImageRef, profileImageFile)
+          profileImageUrl = await getDownloadURL(profileSnapshot.ref)
+          console.log("Profile image uploaded successfully. URL:", profileImageUrl)
+        }
+
+        if (idCardImageFile) {
+          const idCardImageRef = ref(storage, `experts/${user?.uid}/id_card_${idCardImageFile.name}`)
+          const idCardSnapshot = await uploadBytes(idCardImageRef, idCardImageFile)
+          idCardImageUrl = await getDownloadURL(idCardSnapshot.ref)
+          console.log("ID card image uploaded successfully. URL:", idCardImageUrl)
         }
 
         // Save expert data to Firestore
         const expertData = {
           ...formData,
           userId: user?.uid,
-          image: imageUrl,
+          profileImage: profileImageUrl,
+          idCardImage: idCardImageUrl,
           createdAt: new Date().toISOString(),
         }
 
@@ -415,11 +427,15 @@ export default function ExpertRegisterPage() {
     }))
   }
 
-  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>, type: "profile" | "idCard") => {
     const file = event.target.files?.[0]
     if (file) {
-      setImageFile(file)
-      console.log("Image file selected:", file.name)
+      if (type === "profile") {
+        setProfileImageFile(file)
+      } else {
+        setIdCardImageFile(file)
+      }
+      console.log(`${type} image file selected:`, file.name)
     }
   }
 
@@ -607,7 +623,12 @@ export default function ExpertRegisterPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Profile Image</label>
-                  <Input type="file" accept="image/*" onChange={handleImageChange} className="text-sm" />
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageChange(e, "profile")}
+                    className="text-sm"
+                  />
                 </div>
 
                 {/* Expertise Fields */}
@@ -684,6 +705,18 @@ export default function ExpertRegisterPage() {
                 </div>
               </div>
             )}
+            {/* ID CARD */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">College ID Card</label>
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleImageChange(e, "idCard")}
+                required
+                className="text-sm"
+              />
+              <p className="text-xs text-gray-500 mt-1">Please upload a clear image of your college ID card</p>
+            </div>
 
             {/* Submit Button */}
             <Button

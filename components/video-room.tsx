@@ -5,9 +5,15 @@ import { Button } from './ui/button';
 import { Loader2, Mic, MicOff, Video, VideoOff } from 'lucide-react';
 import { toast } from 'sonner';
 
+
 interface VideoRoomProps {
+
   expertId: string;
+
+  userId?: string;
+
 }
+
 
 export function VideoRoom({ expertId }: VideoRoomProps) {
   const [loading, setLoading] = useState(true);
