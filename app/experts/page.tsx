@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { VideoIcon as VideoCall, PhoneCall, Calendar, Star, Award, Briefcase, Clock, Users, Search, School, GraduationCap, Building } from "lucide-react"
+import { VideoIcon as VideoCall, PhoneCall, Calendar, Star, Award, Briefcase, Clock, Users, Search, School, GraduationCap, Building, User } from "lucide-react"
 import { toast } from "sonner"
 import { VideoRoom } from "@/components/video-room"
 import { auth, db } from "@/lib/firebase"
-import type { User } from "firebase/auth"
+import type { User as AuthUser } from "firebase/auth"
 import { collection, getDocs } from "firebase/firestore"
 import { motion } from "framer-motion"
 
@@ -40,7 +40,7 @@ export default function ExpertsPage() {
   const [filteredExperts, setFilteredExperts] = useState<Expert[]>([])
   const [selectedExpert, setSelectedExpert] = useState<Expert | null>(null)
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<AuthUser | null>(null)
   const [loading, setLoading] = useState(true)
   const [searchFilters, setSearchFilters] = useState({
     college: "",
@@ -215,12 +215,18 @@ export default function ExpertsPage() {
                   <div className="p-6 bg-gradient-to-br from-white to-blue-50">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center">
-                        <Image
-                          src={expert.image}
-                          width={60} height={60}
-                          alt={expert.name}
-                          className="w-16 h-16 rounded-full object-cover border-2 border-blue-900 group-hover:scale-110 transition-transform duration-300"
-                        />
+                      {expert.image ? (
+  <Image
+    src={expert.image}
+    width={60} height={60}
+    alt={expert.name}
+    className="w-16 h-16 rounded-full object-cover border-2 border-blue-900 group-hover:scale-110 transition-transform duration-300"
+  />
+) : (
+  <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
+    <User className="w-8 h-8 text-gray-500" />
+  </div>
+)}
                         <div className="ml-4">
                           <h3 className="text-lg font-semibold text-blue-900">{expert.name}</h3>
                           <p className="text-sm text-gray-600">{expert.title}</p>
