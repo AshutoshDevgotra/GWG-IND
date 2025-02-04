@@ -93,7 +93,58 @@ export default function ExpertDashboard() {
       call: <PhoneCall className="w-4 h-4" />,
       booking: <Calendar className="w-4 h-4" />
     };
+// In the ExpertDashboard component
+const ExpertDashboard = () => {
+  interface Booking {
+    id: string;
+    sessionId: string;
+    userId: string;
+    sessionDate: string;
+    status: string;
+  }
+  
+  const [bookings, setBookings] = useState<Booking[]>([]);
 
+  useEffect(() => {
+    const bookingsRef = collection(db, "bookings");
+    const q = query(bookingsRef, where("expertId", "==", auth.currentUser?.uid));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const bookingsData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Booking[];
+      setBookings(bookingsData);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  return (
+    <div>
+      <h2>Bookings</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Session ID</th>
+            <th>User ID</th>
+            <th>Session Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {bookings.map((booking) => (
+            <tr key={booking.id}>
+              <td>{booking.sessionId}</td>
+              <td>{booking.userId}</td>
+              <td>{booking.sessionDate}</td>
+              <td>{booking.status}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
     return (
       <Card key={notification.id} className="p-4 mb-4">
         <div className="flex items-center justify-between">

@@ -11,7 +11,7 @@ import { toast } from "sonner"
 import { VideoRoom } from "@/components/video-room"
 import { auth, db } from "@/lib/firebase"
 import type { User as AuthUser } from "firebase/auth"
-import { collection, getDocs } from "firebase/firestore"
+import { addDoc, collection, getDocs } from "firebase/firestore"
 import { motion } from "framer-motion"
 
 interface Expert {
@@ -93,7 +93,23 @@ export default function ExpertsPage() {
 
     setFilteredExperts(filtered)
   }, [searchFilters, experts])
-
+  const handleBookSession = async (expert: Expert) => {
+    try {
+      const bookingRef = collection(db, "bookings");
+      await addDoc(bookingRef, {
+        userId: user?.uid,
+        expertId: expert.id,
+        sessionId: generateUUID(),
+        sessionDate: new Date().toISOString(),
+        status: "pending",
+      });
+  
+      toast.success("Booking request sent successfully!");
+    } catch (error) {
+      console.error("Error sending booking request:", error);
+      toast.error("Failed to send booking request");
+    }
+  };
   // ... (keep existing handleBooking and startVideoCall functions)
 
   return (
@@ -256,3 +272,7 @@ export default function ExpertsPage() {
 
       )
     }
+function generateUUID(): any {
+  throw new Error("Function not implemented.")
+}
+
