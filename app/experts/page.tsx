@@ -1,5 +1,5 @@
 "use client"
-
+import Image from "next/image"
 import { useState, useEffect } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -147,10 +147,13 @@ export default function ExpertsPage() {
                 <SelectValue placeholder="Select College" />
               </SelectTrigger>
               <SelectContent>
-                {Array.from(new Set(experts.map(e => e.college))).map(college => (
-                  <SelectItem key={college} value={college}>{college}</SelectItem>
-                ))}
-              </SelectContent>
+  {/* College Dropdown */}
+  {Array.from(new Set(experts.map(e => e.college))).map((college) => (
+    <SelectItem key={`college-${college}`} value={college}>
+      {college}
+    </SelectItem>
+  ))}
+</SelectContent>
             </Select>
             <Select
               value={searchFilters.branch}
@@ -160,10 +163,13 @@ export default function ExpertsPage() {
                 <SelectValue placeholder="Select Branch" />
               </SelectTrigger>
               <SelectContent>
-                {Array.from(new Set(experts.map(e => e.branch))).map(branch => (
-                  <SelectItem key={branch} value={branch}>{branch}</SelectItem>
-                ))}
-              </SelectContent>
+  {/* Branch Dropdown */}
+  {Array.from(new Set(experts.map(e => e.branch))).map((branch) => (
+    <SelectItem key={`branch-${branch}`} value={branch}>
+      {branch}
+    </SelectItem>
+  ))}
+</SelectContent>
             </Select>
             <Select
               value={searchFilters.year}
@@ -173,10 +179,13 @@ export default function ExpertsPage() {
                 <SelectValue placeholder="Graduation Year" />
               </SelectTrigger>
               <SelectContent>
-                {Array.from(new Set(experts.map(e => e.year))).map(year => (
-                  <SelectItem key={year} value={year}>{year}</SelectItem>
-                ))}
-              </SelectContent>
+  {/* Year Dropdown */}
+  {Array.from(new Set(experts.map(e => e.year))).map((year) => (
+    <SelectItem key={`year-${year}`} value={year}>
+      {year}
+    </SelectItem>
+  ))}
+</SelectContent>
             </Select>
           </div>
         </motion.div>
@@ -206,8 +215,9 @@ export default function ExpertsPage() {
                   <div className="p-6 bg-gradient-to-br from-white to-blue-50">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center">
-                        <img
-                          src={expert.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(expert.name)}`}
+                        <Image
+                          src={expert.image}
+                          width={60} height={60}
                           alt={expert.name}
                           className="w-16 h-16 rounded-full object-cover border-2 border-blue-900 group-hover:scale-110 transition-transform duration-300"
                         />
