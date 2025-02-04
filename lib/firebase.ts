@@ -3,7 +3,7 @@
 import { initializeApp, getApps } from "firebase/app"
 import { getFirestore } from "firebase/firestore"
 import { getAuth, GoogleAuthProvider } from "firebase/auth"
-import { getStorage } from "firebase/storage"
+import { getStorage, ref } from "firebase/storage"
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -21,6 +21,8 @@ const auth = getAuth(app)
 const googleProvider = new GoogleAuthProvider()
 export const storage = getStorage(app)
 export { db, auth, googleProvider }
+
+const storageRef = ref(storage, 'gwg-yt.firebasestorage.app'); // Use the correct bucket name
 // Image validation helper
 export const validateImage = (file: File) => {
   const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
