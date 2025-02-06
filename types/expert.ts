@@ -1,4 +1,6 @@
 export interface Expert {
+    isLive: any
+    isOnline: any
     id: string
     name: string
     title: string

@@ -1,123 +1,254 @@
-"use client"
-import Image from "next/image"
-import { useState, useEffect } from "react"
-import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Star, Search, User } from "lucide-react"
-import { toast } from "sonner"
-import { VideoRoom } from "@/components/video-room"
-import { auth, db } from "@/lib/firebase"
-import type { User as AuthUser } from "firebase/auth"
-import { addDoc, collection, getDocs } from "firebase/firestore"
-import { motion } from "framer-motion"
+"use client";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Star, Search, User } from "lucide-react";
+import { toast } from "sonner";
+import { ExpertCard } from "@/components/ExpertCard";
+import { ChatWindow } from "@/components/ChatWindow";
+import { VideoRoom } from "@/components/video-room";
+import { auth, db } from "@/lib/firebase";
+import { collection, addDoc, getDocs, query, where, onSnapshot, serverTimestamp } from "firebase/firestore";
+import { motion } from "framer-motion";
 
 interface Expert {
-  id: string
-  name: string
-  title: string
-  image: string
-  rating: number
-  reviews: number
-  expertise: string[]
-  experience: string
-  price: number
-  availability: string
-  bio: string
-  email: string
-  phone: string
-  userId: string
-  createdAt: string
-  college: string
-  branch: string
-  year: string
+  id: string;
+  name: string;
+  title: string;
+  image: string;
+  rating: number;
+  reviews: number;
+  expertise: string[];
+  experience: string;
+  price: number;
+  availability: string;
+  bio: string;
+  email: string;
+  phone: string;
+  userId: string;
+  createdAt: string;
+  college: string;
+  branch: string;
+  year: string;
+  isOnline: boolean;
+  isLive: boolean;
+  institutionType: string;
+  achievements: string[];
+}
+
+interface Channel {
+  id: string;
+  expertId: string;
+  userId: string;
+  status: string;
+  createdAt: string;
+  lastMessage?: string;
+  lastMessageTime?: string;
 }
 
 export default function ExpertsPage() {
-  const [experts, setExperts] = useState<Expert[]>([])
-  const [filteredExperts, setFilteredExperts] = useState<Expert[]>([])
-  const [selectedExpert, setSelectedExpert] = useState<Expert | null>(null)
-  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
-  const [isVideoCallModalOpen, setIsVideoCallModalOpen] = useState(false)
-  const [user, setUser] = useState<AuthUser | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [experts, setExperts] = useState<Expert[]>([]);
+  const [filteredExperts, setFilteredExperts] = useState<Expert[]>([]);
+  const [selectedExpert, setSelectedExpert] = useState<Expert | null>(null);
+  const [isVideoCallModalOpen, setIsVideoCallModalOpen] = useState(false);
+  const [activeChatId, setActiveChatId] = useState<string | null>(null);
+  const [activeCallType, setActiveCallType] = useState<'voice' | 'video' | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [channels, setChannels] = useState<Channel[]>([]);
   const [searchFilters, setSearchFilters] = useState({
     college: "",
     branch: "",
     year: "",
     query: "",
-  })
+  });
+
+  // Get unique values for select options
+  const uniqueColleges = Array.from(new Set(experts.map((e) => e.college))).sort();
+  const uniqueBranches = Array.from(new Set(experts.map((e) => e.branch))).sort();
+  const uniqueYears = Array.from(new Set(experts.map((e) => e.year))).sort();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      setUser(user)
-    })
-    return () => unsubscribe()
-  }, [])
+      if (!user) {
+        toast.error('Please sign in to access expert services');
+      } else {
+        // Subscribe to user's channels when authenticated
+        const channelsQuery = query(
+          collection(db, 'channels'),
+          where('userId', '==', user.uid)
+        );
+        
+        const channelUnsubscribe = onSnapshot(channelsQuery, (snapshot) => {
+          const channelsData = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          })) as Channel[];
+          setChannels(channelsData);
+        });
+
+        return () => channelUnsubscribe();
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const fetchExperts = async () => {
       try {
-        const expertsCollection = collection(db, "experts")
-        const expertsSnapshot = await getDocs(expertsCollection)
+        const expertsCollection = collection(db, "experts");
+        const expertsSnapshot = await getDocs(expertsCollection);
         const expertsData = expertsSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-        })) as Expert[]
+        })) as Expert[];
 
-        setExperts(expertsData)
-        setFilteredExperts(expertsData)
+        setExperts(expertsData);
+        setFilteredExperts(expertsData);
       } catch (error) {
-        console.error("Error fetching experts:", error)
-        toast.error("Failed to load experts")
+        console.error("Error fetching experts:", error);
+        toast.error("Failed to load experts");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchExperts()
-  }, [])
+    fetchExperts();
+
+    // Listen for real-time expert status updates
+    const expertsQuery = query(collection(db, "experts"));
+    const unsubscribe = onSnapshot(expertsQuery, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "modified") {
+          setExperts(prev => prev.map(expert => 
+            expert.id === change.doc.id 
+              ? { ...expert, ...change.doc.data() } as Expert
+              : expert
+          ));
+        }
+      });
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const filtered = experts.filter((expert) => {
       const matchesCollege =
-        !searchFilters.college || expert.college.toLowerCase().includes(searchFilters.college.toLowerCase())
+        !searchFilters.college || expert.college.toLowerCase().includes(searchFilters.college.toLowerCase());
       const matchesBranch =
-        !searchFilters.branch || expert.branch.toLowerCase().includes(searchFilters.branch.toLowerCase())
-      const matchesYear = !searchFilters.year || expert.year.includes(searchFilters.year)
+        !searchFilters.branch || expert.branch.toLowerCase().includes(searchFilters.branch.toLowerCase());
+      const matchesYear = !searchFilters.year || expert.year.includes(searchFilters.year);
       const matchesQuery =
         !searchFilters.query ||
         expert.name.toLowerCase().includes(searchFilters.query.toLowerCase()) ||
-        expert.expertise.some((exp) => exp.toLowerCase().includes(searchFilters.query.toLowerCase()))
+        expert.expertise.some((exp) => exp.toLowerCase().includes(searchFilters.query.toLowerCase()));
 
-      return matchesCollege && matchesBranch && matchesYear && matchesQuery
-    })
+      return matchesCollege && matchesBranch && matchesYear && matchesQuery;
+    });
 
-    setFilteredExperts(filtered)
-  }, [searchFilters, experts])
-  const handleBookSession = async (expert: Expert) => {
-    try {
-      const bookingRef = collection(db, "bookings")
-      await addDoc(bookingRef, {
-        userId: user?.uid,
-        expertId: expert.id,
-        sessionId: generateUUID(),
-        sessionDate: new Date().toISOString(),
-        status: "pending",
-      })
+    setFilteredExperts(filtered);
+  }, [searchFilters, experts]);
 
-      toast.success("Booking request sent successfully!")
-    } catch (error) {
-      console.error("Error sending booking request:", error)
-      toast.error("Failed to send booking request")
+  const handleStartChat = async (expertId: string) => {
+    if (!auth.currentUser) {
+      toast.error('Please sign in to start a chat');
+      return;
     }
-  }
-  const startVideoCall = (expert: Expert) => {
-    setSelectedExpert(expert)
-    setIsVideoCallModalOpen(true)
-  }
+
+    try {
+      // Check if a channel already exists
+      const existingChannel = channels.find(
+        channel => channel.expertId === expertId && channel.userId === auth.currentUser?.uid
+      );
+
+      if (existingChannel) {
+        setActiveChatId(existingChannel.id);
+        return;
+      }
+
+      // Create a new channel if one doesn't exist
+      const channelRef = await addDoc(collection(db, 'channels'), {
+        expertId,
+        userId: auth.currentUser.uid,
+        status: 'active',
+        createdAt: serverTimestamp(),
+        lastMessage: null,
+        lastMessageTime: null,
+        unreadCount: 0
+      });
+
+      setActiveChatId(channelRef.id);
+      toast.success('Chat session started');
+    } catch (error) {
+      console.error('Error starting chat:', error);
+      toast.error('Failed to start chat session');
+    }
+  };
+
+  const handleStartVoiceCall = async (expertId: string) => {
+    if (!auth.currentUser) {
+      toast.error('Please sign in to start a call');
+      return;
+    }
+
+    const expert = experts.find(e => e.id === expertId);
+    if (!expert?.isOnline) {
+      toast.error('Expert is currently offline');
+      return;
+    }
+
+    try {
+      const callDoc = await addDoc(collection(db, 'calls'), {
+        expertId,
+        userId: auth.currentUser.uid,
+        type: 'voice',
+        status: 'pending',
+        createdAt: serverTimestamp(),
+      });
+
+      setActiveCallType('voice');
+      toast.success('Voice call request sent');
+    } catch (error) {
+      console.error('Error starting voice call:', error);
+      toast.error('Failed to start voice call');
+    }
+  };
+
+  const handleStartVideoCall = async (expertId: string) => {
+    if (!auth.currentUser) {
+      toast.error('Please sign in to start a video call');
+      return;
+    }
+
+    const expert = experts.find(e => e.id === expertId);
+    if (!expert?.isOnline) {
+      toast.error('Expert is currently offline');
+      return;
+    }
+
+    try {
+      const callDoc = await addDoc(collection(db, 'calls'), {
+        expertId,
+        userId: auth.currentUser.uid,
+        type: 'video',
+        status: 'pending',
+        createdAt: serverTimestamp(),
+      });
+
+      setSelectedExpert(expert);
+      setActiveCallType('video');
+      setIsVideoCallModalOpen(true);
+      toast.success('Video call request sent');
+    } catch (error) {
+      console.error('Error starting video call:', error);
+      toast.error('Failed to start video call');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
@@ -170,8 +301,7 @@ export default function ExpertsPage() {
                 <SelectValue placeholder="Select College" />
               </SelectTrigger>
               <SelectContent>
-                {/* College Dropdown */}
-                {Array.from(new Set(experts.map((e) => e.college))).map((college) => (
+                {uniqueColleges.map((college) => (
                   <SelectItem key={`college-${college}`} value={college}>
                     {college}
                   </SelectItem>
@@ -186,8 +316,7 @@ export default function ExpertsPage() {
                 <SelectValue placeholder="Select Branch" />
               </SelectTrigger>
               <SelectContent>
-                {/* Branch Dropdown */}
-                {Array.from(new Set(experts.map((e) => e.branch))).map((branch) => (
+                {uniqueBranches.map((branch) => (
                   <SelectItem key={`branch-${branch}`} value={branch}>
                     {branch}
                   </SelectItem>
@@ -202,8 +331,7 @@ export default function ExpertsPage() {
                 <SelectValue placeholder="Graduation Year" />
               </SelectTrigger>
               <SelectContent>
-                {/* Year Dropdown */}
-                {Array.from(new Set(experts.map((e) => e.year))).map((year) => (
+                {uniqueYears.map((year) => (
                   <SelectItem key={`year-${year}`} value={year}>
                     {year}
                   </SelectItem>
@@ -226,76 +354,36 @@ export default function ExpertsPage() {
           </div>
         ) : (
           <div className="grid md:grid-cols-3 gap-8">
-            {filteredExperts.map((expert, index) => (
-              <motion.div
+            {filteredExperts.map((expert) => (
+              <ExpertCard
                 key={expert.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Card className="group bg-white overflow-hidden hover:shadow-xl transition-all duration-300 border-0 hover:scale-105">
-                  <div className="p-6 bg-gradient-to-br from-white to-blue-50">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center">
-                        {expert.image ? (
-                          <Image
-                            src={expert.image || "/placeholder.svg"}
-                            width={60}
-                            height={60}
-                            alt={expert.name}
-                            className="w-16 h-16 rounded-full object-cover border-2 border-blue-900 group-hover:scale-110 transition-transform duration-300"
-                          />
-                        ) : (
-                          <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
-                            <User className="w-8 h-8 text-gray-500" />
-                          </div>
-                        )}
-                        <div className="ml-4">
-                          <h3 className="text-lg font-semibold text-blue-900">{expert.name}</h3>
-                          <p className="text-sm text-gray-600">{expert.title}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center">
-                        <Star className="w-4 h-4 text-yellow-400" fill="currentColor" />
-                        <span className="ml-1 text-sm font-medium">{expert.rating}</span>
-                      </div>
-                    </div>
-                    <p className="mt-4 text-sm text-gray-700">{expert.bio}</p>
-                    <p className="mt-2 text-sm text-gray-600">Expertise: {expert.expertise.join(", ")}</p>
-                    <p className="mt-2 text-sm text-gray-600">Experience: {expert.experience}</p>
-                    <p className="mt-2 text-sm text-gray-600">Price: ₹{expert.price}/session</p>
-                    <div className="mt-4 flex gap-3">
-                      <Button variant="outline" onClick={() => setSelectedExpert(expert)}>
-                        View Details
-                      </Button>
-                      <Button
-                        className="bg-blue-600 hover:bg-blue-700 text-white"
-                        onClick={() => startVideoCall(expert)}
-                      >
-                        Book Session
-                      </Button>
-                    </div>
-                  </div>
-                </Card>
-              </motion.div>
+                expert={expert}
+                onStartChat={handleStartChat}
+                onStartVoiceCall={handleStartVoiceCall}
+                onStartVideoCall={handleStartVideoCall}
+              />
             ))}
           </div>
         )}
       </div>
+
+      {activeChatId && (
+        <ChatWindow
+          channelId={activeChatId}
+          userId={auth.currentUser?.uid || ''}
+          onClose={() => setActiveChatId(null)} expertId={""}        />
+      )}
+
       {isVideoCallModalOpen && selectedExpert && (
         <Dialog open={isVideoCallModalOpen} onOpenChange={setIsVideoCallModalOpen}>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle>Video Call with {selectedExpert.name}</DialogTitle>
             </DialogHeader>
-            <VideoRoom expertId={selectedExpert.id} userId={user?.uid} />
+            <VideoRoom expertId={selectedExpert.id} userId={auth.currentUser?.uid} />
           </DialogContent>
         </Dialog>
       )}
     </div>
-  )
+  );
 }
-function generateUUID(): any {
-  throw new Error("Function not implemented.")
-}
-
