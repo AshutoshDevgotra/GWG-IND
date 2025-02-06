@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { VideoIcon as VideoCall, PhoneCall, Calendar, Star, Award, Briefcase, Clock, Users, Search, School, GraduationCap, Building, User } from "lucide-react"
+import { Star, Search, User } from "lucide-react"
 import { toast } from "sonner"
 import { VideoRoom } from "@/components/video-room"
 import { auth, db } from "@/lib/firebase"
@@ -40,13 +40,14 @@ export default function ExpertsPage() {
   const [filteredExperts, setFilteredExperts] = useState<Expert[]>([])
   const [selectedExpert, setSelectedExpert] = useState<Expert | null>(null)
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
+  const [isVideoCallModalOpen, setIsVideoCallModalOpen] = useState(false)
   const [user, setUser] = useState<AuthUser | null>(null)
   const [loading, setLoading] = useState(true)
   const [searchFilters, setSearchFilters] = useState({
     college: "",
     branch: "",
     year: "",
-    query: ""
+    query: "",
   })
 
   useEffect(() => {
@@ -80,13 +81,16 @@ export default function ExpertsPage() {
   }, [])
 
   useEffect(() => {
-    const filtered = experts.filter(expert => {
-      const matchesCollege = !searchFilters.college || expert.college.toLowerCase().includes(searchFilters.college.toLowerCase())
-      const matchesBranch = !searchFilters.branch || expert.branch.toLowerCase().includes(searchFilters.branch.toLowerCase())
+    const filtered = experts.filter((expert) => {
+      const matchesCollege =
+        !searchFilters.college || expert.college.toLowerCase().includes(searchFilters.college.toLowerCase())
+      const matchesBranch =
+        !searchFilters.branch || expert.branch.toLowerCase().includes(searchFilters.branch.toLowerCase())
       const matchesYear = !searchFilters.year || expert.year.includes(searchFilters.year)
-      const matchesQuery = !searchFilters.query || 
+      const matchesQuery =
+        !searchFilters.query ||
         expert.name.toLowerCase().includes(searchFilters.query.toLowerCase()) ||
-        expert.expertise.some(exp => exp.toLowerCase().includes(searchFilters.query.toLowerCase()))
+        expert.expertise.some((exp) => exp.toLowerCase().includes(searchFilters.query.toLowerCase()))
 
       return matchesCollege && matchesBranch && matchesYear && matchesQuery
     })
@@ -95,22 +99,25 @@ export default function ExpertsPage() {
   }, [searchFilters, experts])
   const handleBookSession = async (expert: Expert) => {
     try {
-      const bookingRef = collection(db, "bookings");
+      const bookingRef = collection(db, "bookings")
       await addDoc(bookingRef, {
         userId: user?.uid,
         expertId: expert.id,
         sessionId: generateUUID(),
         sessionDate: new Date().toISOString(),
         status: "pending",
-      });
-  
-      toast.success("Booking request sent successfully!");
+      })
+
+      toast.success("Booking request sent successfully!")
     } catch (error) {
-      console.error("Error sending booking request:", error);
-      toast.error("Failed to send booking request");
+      console.error("Error sending booking request:", error)
+      toast.error("Failed to send booking request")
     }
-  };
-  // ... (keep existing handleBooking and startVideoCall functions)
+  }
+  const startVideoCall = (expert: Expert) => {
+    setSelectedExpert(expert)
+    setIsVideoCallModalOpen(true)
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
@@ -119,14 +126,14 @@ export default function ExpertsPage() {
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
-            <motion.h1 
+            <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-5xl font-bold text-white mb-4 font-display"
             >
               Connect with Industry Experts
             </motion.h1>
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
@@ -140,7 +147,7 @@ export default function ExpertsPage() {
 
       {/* Search Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-40 mb-12">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="bg-white rounded-xl shadow-lg p-6 backdrop-blur-lg bg-opacity-90"
@@ -152,63 +159,62 @@ export default function ExpertsPage() {
                 placeholder="Search by name or expertise..."
                 className="pl-10"
                 value={searchFilters.query}
-                onChange={(e) => setSearchFilters(prev => ({ ...prev, query: e.target.value }))}
+                onChange={(e) => setSearchFilters((prev) => ({ ...prev, query: e.target.value }))}
               />
             </div>
             <Select
               value={searchFilters.college}
-              onValueChange={(value) => setSearchFilters(prev => ({ ...prev, college: value }))}
+              onValueChange={(value) => setSearchFilters((prev) => ({ ...prev, college: value }))}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select College" />
               </SelectTrigger>
               <SelectContent>
-  {/* College Dropdown */}
-  {Array.from(new Set(experts.map(e => e.college))).map((college) => (
-    <SelectItem key={`college-${college}`} value={college}>
-      {college}
-    </SelectItem>
-  ))}
-</SelectContent>
+                {/* College Dropdown */}
+                {Array.from(new Set(experts.map((e) => e.college))).map((college) => (
+                  <SelectItem key={`college-${college}`} value={college}>
+                    {college}
+                  </SelectItem>
+                ))}
+              </SelectContent>
             </Select>
             <Select
               value={searchFilters.branch}
-              onValueChange={(value) => setSearchFilters(prev => ({ ...prev, branch: value }))}
+              onValueChange={(value) => setSearchFilters((prev) => ({ ...prev, branch: value }))}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select Branch" />
               </SelectTrigger>
               <SelectContent>
-  {/* Branch Dropdown */}
-  {Array.from(new Set(experts.map(e => e.branch))).map((branch) => (
-    <SelectItem key={`branch-${branch}`} value={branch}>
-      {branch}
-    </SelectItem>
-  ))}
-</SelectContent>
+                {/* Branch Dropdown */}
+                {Array.from(new Set(experts.map((e) => e.branch))).map((branch) => (
+                  <SelectItem key={`branch-${branch}`} value={branch}>
+                    {branch}
+                  </SelectItem>
+                ))}
+              </SelectContent>
             </Select>
             <Select
               value={searchFilters.year}
-              onValueChange={(value) => setSearchFilters(prev => ({ ...prev, year: value }))}
+              onValueChange={(value) => setSearchFilters((prev) => ({ ...prev, year: value }))}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Graduation Year" />
               </SelectTrigger>
               <SelectContent>
-  {/* Year Dropdown */}
-  {Array.from(new Set(experts.map(e => e.year))).map((year) => (
-    <SelectItem key={`year-${year}`} value={year}>
-      {year}
-    </SelectItem>
-  ))}
-</SelectContent>
+                {/* Year Dropdown */}
+                {Array.from(new Set(experts.map((e) => e.year))).map((year) => (
+                  <SelectItem key={`year-${year}`} value={year}>
+                    {year}
+                  </SelectItem>
+                ))}
+              </SelectContent>
             </Select>
           </div>
         </motion.div>
       </div>
 
-     
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
         {loading ? (
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-900 mx-auto"></div>
@@ -231,18 +237,19 @@ export default function ExpertsPage() {
                   <div className="p-6 bg-gradient-to-br from-white to-blue-50">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center">
-                      {expert.image ? (
-  <Image
-    src={expert.image}
-    width={60} height={60}
-    alt={expert.name}
-    className="w-16 h-16 rounded-full object-cover border-2 border-blue-900 group-hover:scale-110 transition-transform duration-300"
-  />
-) : (
-  <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
-    <User className="w-8 h-8 text-gray-500" />
-  </div>
-)}
+                        {expert.image ? (
+                          <Image
+                            src={expert.image || "/placeholder.svg"}
+                            width={60}
+                            height={60}
+                            alt={expert.name}
+                            className="w-16 h-16 rounded-full object-cover border-2 border-blue-900 group-hover:scale-110 transition-transform duration-300"
+                          />
+                        ) : (
+                          <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
+                            <User className="w-8 h-8 text-gray-500" />
+                          </div>
+                        )}
                         <div className="ml-4">
                           <h3 className="text-lg font-semibold text-blue-900">{expert.name}</h3>
                           <p className="text-sm text-gray-600">{expert.title}</p>
@@ -258,8 +265,15 @@ export default function ExpertsPage() {
                     <p className="mt-2 text-sm text-gray-600">Experience: {expert.experience}</p>
                     <p className="mt-2 text-sm text-gray-600">Price: ₹{expert.price}/session</p>
                     <div className="mt-4 flex gap-3">
-                      <Button variant="outline" onClick={() => setSelectedExpert(expert)}>View Details</Button>
-                      <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setIsVideoModalOpen(true)}>Book Session</Button>
+                      <Button variant="outline" onClick={() => setSelectedExpert(expert)}>
+                        View Details
+                      </Button>
+                      <Button
+                        className="bg-blue-600 hover:bg-blue-700 text-white"
+                        onClick={() => startVideoCall(expert)}
+                      >
+                        Book Session
+                      </Button>
                     </div>
                   </div>
                 </Card>
@@ -268,10 +282,19 @@ export default function ExpertsPage() {
           </div>
         )}
       </div>
+      {isVideoCallModalOpen && selectedExpert && (
+        <Dialog open={isVideoCallModalOpen} onOpenChange={setIsVideoCallModalOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Video Call with {selectedExpert.name}</DialogTitle>
+            </DialogHeader>
+            <VideoRoom expertId={selectedExpert.id} userId={user?.uid} />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
-
-      )
-    }
+  )
+}
 function generateUUID(): any {
   throw new Error("Function not implemented.")
 }
