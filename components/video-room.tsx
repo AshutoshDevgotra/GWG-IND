@@ -124,3 +124,4 @@ export function VideoRoom({ expertId }: VideoRoomProps) {
     </div>
   );
 }
+export default VideoRoom;
