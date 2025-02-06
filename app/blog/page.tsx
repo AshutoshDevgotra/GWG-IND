@@ -62,6 +62,11 @@ export default function BlogPage() {
             Explore Experts
           </Link>
         </section>
+        <section>
+          <h3>
+                Thankyou
+          </h3>
+        </section>
       </main>
 
       <footer className="mt-16 py-6 bg-gray-100 text-center text-gray-600">
