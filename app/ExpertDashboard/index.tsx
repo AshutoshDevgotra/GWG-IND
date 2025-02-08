@@ -56,7 +56,7 @@ const ExpertDashboard = () => {
                 throw new Error("Function not implemented.");
             } } onStartVideoCall={function (): void {
                 throw new Error("Function not implemented.");
-            } } />
+            } } isOnline={false} />
         ))}
       </div>
     </div>

@@ -306,8 +306,7 @@ export default function ExpertsPage() {
                 expert={expert}
                 onStartChat={handleStartChat}
                 onStartVoiceCall={(expertId) => handleStartCall(expertId, 'voice')}
-                onStartVideoCall={(expertId) => handleStartCall(expertId, 'video')}
-              />
+                onStartVideoCall={(expertId) => handleStartCall(expertId, 'video')} isOnline={false}              />
             ))}
           </div>
         )}
