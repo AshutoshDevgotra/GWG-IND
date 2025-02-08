@@ -1,54 +1,19 @@
 "use client";
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Star, Search, User } from "lucide-react";
+import { Star, Search } from "lucide-react";
 import { toast } from "sonner";
-import { ExpertCard } from "@/components/ExpertCard";
+import ExpertCard from "@/components/ExpertCard";
 import { ChatWindow } from "@/components/ChatWindow";
 import { VideoRoom } from "@/components/video-room";
+import { WalletButton } from "@/components/WalletButton";
 import { auth, db } from "@/lib/firebase";
-import { collection, addDoc, getDocs, query, where, onSnapshot, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, getDocs, query, where, onSnapshot, serverTimestamp, getDoc, doc, updateDoc } from "firebase/firestore";
 import { motion } from "framer-motion";
-
-interface Expert {
-  id: string;
-  name: string;
-  title: string;
-  image: string;
-  rating: number;
-  reviews: number;
-  expertise: string[];
-  experience: string;
-  price: number;
-  availability: string;
-  bio: string;
-  email: string;
-  phone: string;
-  userId: string;
-  createdAt: string;
-  college: string;
-  branch: string;
-  year: string;
-  isOnline: boolean;
-  isLive: boolean;
-  institutionType: string;
-  achievements: string[];
-}
-
-interface Channel {
-  id: string;
-  expertId: string;
-  userId: string;
-  status: string;
-  createdAt: string;
-  lastMessage?: string;
-  lastMessageTime?: string;
-}
+import { Expert } from "@/types/expert";
 
 export default function ExpertsPage() {
   const [experts, setExperts] = useState<Expert[]>([]);
@@ -58,7 +23,7 @@ export default function ExpertsPage() {
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [activeCallType, setActiveCallType] = useState<'voice' | 'video' | null>(null);
   const [loading, setLoading] = useState(true);
-  const [channels, setChannels] = useState<Channel[]>([]);
+  const [walletBalance, setWalletBalance] = useState(0);
   const [searchFilters, setSearchFilters] = useState({
     college: "",
     branch: "",
@@ -72,25 +37,25 @@ export default function ExpertsPage() {
   const uniqueYears = Array.from(new Set(experts.map((e) => e.year))).sort();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (!user) {
         toast.error('Please sign in to access expert services');
       } else {
-        // Subscribe to user's channels when authenticated
-        const channelsQuery = query(
-          collection(db, 'channels'),
-          where('userId', '==', user.uid)
-        );
-        
-        const channelUnsubscribe = onSnapshot(channelsQuery, (snapshot) => {
-          const channelsData = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          })) as Channel[];
-          setChannels(channelsData);
+        // Fetch wallet balance
+        const walletRef = doc(db, 'wallets', user.uid);
+        const walletDoc = await getDoc(walletRef);
+        if (walletDoc.exists()) {
+          setWalletBalance(walletDoc.data().balance);
+        }
+
+        // Subscribe to wallet changes
+        const walletUnsubscribe = onSnapshot(walletRef, (doc) => {
+          if (doc.exists()) {
+            setWalletBalance(doc.data().balance);
+          }
         });
 
-        return () => channelUnsubscribe();
+        return () => walletUnsubscribe();
       }
     });
 
@@ -161,25 +126,12 @@ export default function ExpertsPage() {
     }
 
     try {
-      // Check if a channel already exists
-      const existingChannel = channels.find(
-        channel => channel.expertId === expertId && channel.userId === auth.currentUser?.uid
-      );
-
-      if (existingChannel) {
-        setActiveChatId(existingChannel.id);
-        return;
-      }
-
-      // Create a new channel if one doesn't exist
+      // Create a new chat channel
       const channelRef = await addDoc(collection(db, 'channels'), {
         expertId,
         userId: auth.currentUser.uid,
         status: 'active',
         createdAt: serverTimestamp(),
-        lastMessage: null,
-        lastMessageTime: null,
-        unreadCount: 0
       });
 
       setActiveChatId(channelRef.id);
@@ -190,7 +142,7 @@ export default function ExpertsPage() {
     }
   };
 
-  const handleStartVoiceCall = async (expertId: string) => {
+  const handleStartCall = async (expertId: string, type: 'voice' | 'video') => {
     if (!auth.currentUser) {
       toast.error('Please sign in to start a call');
       return;
@@ -202,32 +154,10 @@ export default function ExpertsPage() {
       return;
     }
 
-    try {
-      const callDoc = await addDoc(collection(db, 'calls'), {
-        expertId,
-        userId: auth.currentUser.uid,
-        type: 'voice',
-        status: 'pending',
-        createdAt: serverTimestamp(),
-      });
-
-      setActiveCallType('voice');
-      toast.success('Voice call request sent');
-    } catch (error) {
-      console.error('Error starting voice call:', error);
-      toast.error('Failed to start voice call');
-    }
-  };
-
-  const handleStartVideoCall = async (expertId: string) => {
-    if (!auth.currentUser) {
-      toast.error('Please sign in to start a video call');
-      return;
-    }
-
-    const expert = experts.find(e => e.id === expertId);
-    if (!expert?.isOnline) {
-      toast.error('Expert is currently offline');
+    // Check wallet balance
+    const requiredBalance = expert.pricePerMinute * 5; // Minimum 5 minutes
+    if (walletBalance < requiredBalance) {
+      toast.error(`Insufficient balance. Minimum ₹${requiredBalance} required for call`);
       return;
     }
 
@@ -235,43 +165,55 @@ export default function ExpertsPage() {
       const callDoc = await addDoc(collection(db, 'calls'), {
         expertId,
         userId: auth.currentUser.uid,
-        type: 'video',
+        type,
         status: 'pending',
         createdAt: serverTimestamp(),
+        pricePerMinute: expert.pricePerMinute
       });
 
-      setSelectedExpert(expert);
-      setActiveCallType('video');
-      setIsVideoCallModalOpen(true);
-      toast.success('Video call request sent');
+      if (type === 'video') {
+        setSelectedExpert(expert);
+        setIsVideoCallModalOpen(true);
+      }
+      setActiveCallType(type);
+      toast.success(`${type === 'video' ? 'Video' : 'Voice'} call request sent`);
     } catch (error) {
-      console.error('Error starting video call:', error);
-      toast.error('Failed to start video call');
+      console.error('Error starting call:', error);
+      toast.error('Failed to start call');
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
-      {/* Header with enhanced gradient */}
+      {/* Header */}
       <div className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 pt-24 pb-32 mb-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-5xl font-bold text-white mb-4 font-display"
-            >
-              Connect with Industry Experts
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-xl text-white/80 max-w-2xl mx-auto font-light"
-            >
-              Get personalized guidance from our experienced professionals
-            </motion.p>
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-5xl font-bold text-white mb-4 font-display"
+              >
+                Connect with Industry Experts
+              </motion.h1>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-xl text-white/80 max-w-2xl font-light"
+              >
+                Get personalized guidance from our experienced professionals
+              </motion.p>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="text-white">
+                <p className="text-sm opacity-80">Wallet Balance</p>
+                <p className="text-xl font-semibold">₹{walletBalance}</p>
+              </div>
+              <WalletButton />
+            </div>
           </div>
         </div>
       </div>
@@ -294,54 +236,58 @@ export default function ExpertsPage() {
               />
             </div>
             <Select
-              value={searchFilters.college}
-              onValueChange={(value) => setSearchFilters((prev) => ({ ...prev, college: value }))}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select College" />
-              </SelectTrigger>
-              <SelectContent>
-                {uniqueColleges.map((college) => (
-                  <SelectItem key={`college-${college}`} value={college}>
-                    {college}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select
-              value={searchFilters.branch}
-              onValueChange={(value) => setSearchFilters((prev) => ({ ...prev, branch: value }))}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select Branch" />
-              </SelectTrigger>
-              <SelectContent>
-                {uniqueBranches.map((branch) => (
-                  <SelectItem key={`branch-${branch}`} value={branch}>
-                    {branch}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select
-              value={searchFilters.year}
-              onValueChange={(value) => setSearchFilters((prev) => ({ ...prev, year: value }))}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Graduation Year" />
-              </SelectTrigger>
-              <SelectContent>
-                {uniqueYears.map((year) => (
-                  <SelectItem key={`year-${year}`} value={year}>
-                    {year}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+  value={searchFilters.college}
+  onValueChange={(value) => setSearchFilters((prev) => ({ ...prev, college: value }))}
+>
+  <SelectTrigger>
+    <SelectValue placeholder="Select College" />
+  </SelectTrigger>
+  <SelectContent>
+    {uniqueColleges.map((college, index) => (
+      <SelectItem key={college || index} value={college}>
+        {college}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
+
+<Select
+  value={searchFilters.branch}
+  onValueChange={(value) => setSearchFilters((prev) => ({ ...prev, branch: value }))}
+>
+  <SelectTrigger>
+    <SelectValue placeholder="Select Branch" />
+  </SelectTrigger>
+  <SelectContent>
+    {uniqueBranches.map((branch, index) => (
+      <SelectItem key={branch || index} value={branch}>
+        {branch}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
+
+<Select
+  value={searchFilters.year}
+  onValueChange={(value) => setSearchFilters((prev) => ({ ...prev, year: value }))}
+>
+  <SelectTrigger>
+    <SelectValue placeholder="Graduation Year" />
+  </SelectTrigger>
+  <SelectContent>
+    {uniqueYears.map((year, index) => (
+      <SelectItem key={year || index} value={year}>
+        {year}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
+
           </div>
         </motion.div>
       </div>
 
+      {/* Experts Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
         {loading ? (
           <div className="text-center py-12">
@@ -359,30 +305,35 @@ export default function ExpertsPage() {
                 key={expert.id}
                 expert={expert}
                 onStartChat={handleStartChat}
-                onStartVoiceCall={handleStartVoiceCall}
-                onStartVideoCall={handleStartVideoCall}
+                onStartVoiceCall={(expertId) => handleStartCall(expertId, 'voice')}
+                onStartVideoCall={(expertId) => handleStartCall(expertId, 'video')}
               />
             ))}
           </div>
         )}
       </div>
 
+      {/* Chat Window */}
       {activeChatId && (
         <ChatWindow
           channelId={activeChatId}
           userId={auth.currentUser?.uid || ''}
-          onClose={() => setActiveChatId(null)} expertId={""}        />
+          expertId={selectedExpert?.id || ''}
+          onClose={() => setActiveChatId(null)}
+        />
       )}
 
+      {/* Video Call Modal */}
       {isVideoCallModalOpen && selectedExpert && (
-        <Dialog open={isVideoCallModalOpen} onOpenChange={setIsVideoCallModalOpen}>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Video Call with {selectedExpert.name}</DialogTitle>
-            </DialogHeader>
-            <VideoRoom expertId={selectedExpert.id} userId={auth.currentUser?.uid} />
-          </DialogContent>
-        </Dialog>
+        <VideoRoom
+          expertId={selectedExpert.id}
+          userId={auth.currentUser?.uid}
+          onClose={() => {
+            setIsVideoCallModalOpen(false);
+            setSelectedExpert(null);
+          } } callId={""} onEnd={function (): void {
+            throw new Error("Function not implemented.");
+          } }        />
       )}
     </div>
   );

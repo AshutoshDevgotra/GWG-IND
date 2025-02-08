@@ -11,6 +11,9 @@ interface VideoRoomProps {
   expertId: string;
 
   userId?: string;
+  onClose: () => void;
+  callId: string;
+  onEnd: () => void;
 
 }
 

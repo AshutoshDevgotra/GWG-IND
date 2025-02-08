@@ -1,149 +1,248 @@
 "use client";
-import React, { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect } from "react";
 import { auth, db } from "@/lib/firebase";
 import {
   collection,
   query,
   where,
-  limit,
+  onSnapshot,
+  doc,
+  updateDoc,
+  serverTimestamp,
   getDocs,
-  enableIndexedDbPersistence,
+  addDoc,
 } from "firebase/firestore";
-import LoadingSpinner from "@/components/LoadingSpinner";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { VideoRoom } from "@/components/video-room";
+import { CallNotification } from "@/components/CallNotification";
+import { toast } from "sonner";
+import { Bell, Phone, Video, MessageCircle } from "lucide-react";
 
-const VideoRoom = lazy(() => import("@/components/video-room"));
-
-interface Notification {
+interface Call {
+  pricePerMinute: number;
   id: string;
-  message: string;
-  expertId: string;
-  [key: string]: any;
+  userId: string;
+  type: 'voice' | 'video';
+  status: string;
+  userName: string;
+  startTime?: string;
+  endTime?: string;
+  duration?: number;
+  cost?: number;
 }
 
-interface VideoCallRequest {
+interface Message {
   id: string;
-  clientName: string;
-  expertId: string;
-  [key: string]: any;
+  content: string;
+  senderId: string;
+  timestamp: any;
+  channelId: string;
 }
 
-interface Booking {
+interface Earning {
   id: string;
-  clientName: string;
-  date: string;
-  expertId: string;
-  [key: string]: any;
+  amount: number;
+  callId: string;
+  timestamp: string;
 }
 
-const ExpertDashboard = () => {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [videoCallRequests, setVideoCallRequests] = useState<VideoCallRequest[]>([]);
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [isVideoCallModalOpen, setIsVideoCallModalOpen] = useState(false);
-
-  // Enable Firestore caching
-  useEffect(() => {
-    enableIndexedDbPersistence(db).catch((err) =>
-      console.error("Firestore caching error:", err)
-    );
-  }, []);
+export default function ExpertDashboard() {
+  const [activeCalls, setActiveCalls] = useState<Call[]>([]);
+  const [pendingCalls, setPendingCalls] = useState<Call[]>([]);
+  const [unreadMessages, setUnreadMessages] = useState<Message[]>([]);
+  const [earnings, setEarnings] = useState<Earning[]>([]);
+  const [totalEarnings, setTotalEarnings] = useState(0);
+  const [isOnline, setIsOnline] = useState(false);
+  const [activeCallId, setActiveCallId] = useState<string | null>(null);
 
   useEffect(() => {
     const user = auth.currentUser;
-    if (!user) return;
+    if (!user) {
+      toast.error('Please sign in to access expert dashboard');
+      return;
+    }
 
-    const fetchData = async () => {
-      try {
-        const notificationsQuery = query(
-          collection(db, "notifications"),
-          where("expertId", "==", user.uid),
-          limit(10)
-        );
-        const videoCallRequestsQuery = query(
-          collection(db, "videoCallRequests"),
-          where("expertId", "==", user.uid),
-          limit(5)
-        );
-        const bookingsQuery = query(
-          collection(db, "bookings"),
-          where("expertId", "==", user.uid),
-          limit(10)
-        );
+    // Update expert online status
+    const expertRef = doc(db, 'experts', user.uid);
+    updateDoc(expertRef, {
+      isOnline: true,
+      lastSeen: serverTimestamp()
+    });
 
-        const [notificationsSnapshot, videoCallRequestsSnapshot, bookingsSnapshot] =
-          await Promise.all([
-            getDocs(notificationsQuery),
-            getDocs(videoCallRequestsQuery),
-            getDocs(bookingsQuery),
-          ]);
+    // Listen for calls
+    const callsQuery = query(
+      collection(db, 'calls'),
+      where('expertId', '==', user.uid)
+    );
 
-        setNotifications(
-          notificationsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Notification))
-        );
-        setVideoCallRequests(
-          videoCallRequestsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as VideoCallRequest))
-        );
-        setBookings(
-          bookingsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Booking))
-        );
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
-      }
+    const unsubscribeCalls = onSnapshot(callsQuery, (snapshot) => {
+      const active: Call[] = [];
+      const pending: Call[] = [];
+
+      snapshot.docs.forEach((doc) => {
+        const call = { id: doc.id, ...doc.data() } as Call;
+        if (call.status === 'active') {
+          active.push(call);
+        } else if (call.status === 'pending') {
+          pending.push(call);
+        }
+      });
+
+      setActiveCalls(active);
+      setPendingCalls(pending);
+    });
+
+    // Listen for unread messages
+    const messagesQuery = query(
+      collection(db, 'messages'),
+      where('expertId', '==', user.uid),
+      where('read', '==', false)
+    );
+
+    const unsubscribeMessages = onSnapshot(messagesQuery, (snapshot) => {
+      setUnreadMessages(
+        snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Message))
+      );
+    });
+
+    // Fetch earnings
+    const fetchEarnings = async () => {
+      const earningsQuery = query(
+        collection(db, 'earnings'),
+        where('expertId', '==', user.uid)
+      );
+      const earningsSnapshot = await getDocs(earningsQuery);
+      const earningsData = earningsSnapshot.docs.map(
+        (doc) => ({ id: doc.id, ...doc.data() } as Earning)
+      );
+      setEarnings(earningsData);
+      setTotalEarnings(
+        earningsData.reduce((total, earning) => total + earning.amount, 0)
+      );
     };
 
-    fetchData();
+    fetchEarnings();
+
+    // Cleanup
+    return () => {
+      unsubscribeCalls();
+      unsubscribeMessages();
+      updateDoc(expertRef, {
+        isOnline: false,
+        lastSeen: serverTimestamp()
+      });
+    };
   }, []);
 
+  const handleAcceptCall = async (callId: string) => {
+    try {
+      const callRef = doc(db, 'calls', callId);
+      await updateDoc(callRef, {
+        status: 'active',
+        startTime: serverTimestamp()
+      });
+      setActiveCallId(callId);
+      toast.success('Call accepted');
+    } catch (error) {
+      console.error('Error accepting call:', error);
+      toast.error('Failed to accept call');
+    }
+  };
+
+  const handleRejectCall = async (callId: string) => {
+    try {
+      const callRef = doc(db, 'calls', callId);
+      await updateDoc(callRef, {
+        status: 'rejected',
+        endTime: serverTimestamp()
+      });
+      toast.success('Call rejected');
+    } catch (error) {
+      console.error('Error rejecting call:', error);
+      toast.error('Failed to reject call');
+    }
+  };
+
+  const handleEndCall = async (callId: string) => {
+    try {
+      const callRef = doc(db, 'calls', callId);
+      const call = activeCalls.find(c => c.id === callId);
+      
+      if (call) {
+        const startTime = new Date(call.startTime!).getTime();
+        const endTime = new Date().getTime();
+        const duration = Math.ceil((endTime - startTime) / (1000 * 60)); // Duration in minutes
+        const cost = duration * call.pricePerMinute;
+
+        await updateDoc(callRef, {
+          status: 'completed',
+          endTime: serverTimestamp(),
+          duration,
+          cost
+        });
+
+        // Add earnings
+        await addDoc(collection(db, 'earnings'), {
+          expertId: auth.currentUser!.uid,
+          callId,
+          amount: cost,
+          timestamp: serverTimestamp()
+        });
+
+        setActiveCallId(null);
+        toast.success('Call ended');
+      }
+    } catch (error) {
+      console.error('Error ending call:', error);
+      toast.error('Failed to end call');
+    }
+  };
+
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-6">📊 Expert Dashboard</h1>
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Expert Dashboard</h1>
+        <div className="flex items-center gap-4">
+          <div className="text-right">
+            <p className="text-sm text-gray-600">Total Earnings</p>
+            <p className="text-2xl font-bold">₹{totalEarnings}</p>
+          </div>
+          <Button
+            variant={isOnline ? "default" : "outline"}
+            onClick={() => setIsOnline(!isOnline)}
+          >
+            {isOnline ? 'Online' : 'Offline'}
+          </Button>
+        </div>
+      </div>
 
-      {/* Notifications */}
-      <Card className="mb-6 shadow-lg border">
-        <CardHeader>
-          <CardTitle>🔔 Notifications</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {notifications.length === 0 ? (
-            <p className="text-gray-500">No new notifications.</p>
-          ) : (
-            <ul className="space-y-2">
-              {notifications.map((notification) => (
-                <li key={notification.id} className="bg-gray-100 p-3 rounded-lg shadow-md">
-                  {notification.message}
-                </li>
-              ))}
-            </ul>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Video Call Requests & Bookings in Grid Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Video Call Requests */}
-        <Card className="shadow-lg border">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        {/* Active Calls */}
+        <Card>
           <CardHeader>
-            <CardTitle>📞 Video Call Requests</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <Phone className="w-5 h-5" />
+              Active Calls
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            {videoCallRequests.length === 0 ? (
-              <p className="text-gray-500">No new video call requests.</p>
+            {activeCalls.length === 0 ? (
+              <p className="text-gray-500">No active calls</p>
             ) : (
-              <ul className="space-y-2">
-                {videoCallRequests.map((request) => (
-                  <li
-                    key={request.id}
-                    className="bg-blue-100 p-3 rounded-lg flex justify-between items-center"
-                  >
-                    <span>{request.clientName} requested a call</span>
+              <ul className="space-y-4">
+                {activeCalls.map((call) => (
+                  <li key={call.id} className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium">{call.userName}</p>
+                      <p className="text-sm text-gray-500">{call.type} call</p>
+                    </div>
                     <Button
+                      variant="destructive"
                       size="sm"
-                      className="bg-blue-500 text-white hover:bg-blue-600"
-                      onClick={() => setIsVideoCallModalOpen(true)}
+                      onClick={() => handleEndCall(call.id)}
                     >
-                      Join Call
+                      End Call
                     </Button>
                   </li>
                 ))}
@@ -152,19 +251,80 @@ const ExpertDashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Bookings */}
-        <Card className="shadow-lg border">
+        {/* Pending Calls */}
+        <Card>
           <CardHeader>
-            <CardTitle>📅 Upcoming Bookings</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <Video className="w-5 h-5" />
+              Pending Calls
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            {bookings.length === 0 ? (
-              <p className="text-gray-500">No upcoming bookings.</p>
+            {pendingCalls.length === 0 ? (
+              <p className="text-gray-500">No pending calls</p>
             ) : (
-              <ul className="space-y-2">
-                {bookings.map((booking) => (
-                  <li key={booking.id} className="bg-green-100 p-3 rounded-lg shadow-md">
-                    {booking.clientName} - {booking.date}
+              <ul className="space-y-4">
+                {pendingCalls.map((call) => (
+                  <li key={call.id} className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium">{call.userName}</p>
+                      <p className="text-sm text-gray-500">{call.type} call</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => handleAcceptCall(call.id)}
+                      >
+                        Accept
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleRejectCall(call.id)}
+                      >
+                        Reject
+                      </Button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Unread Messages */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MessageCircle className="w-5 h-5" />
+              Unread Messages
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {unreadMessages.length === 0 ? (
+              <p className="text-gray-500">No unread messages</p>
+            ) : (
+              <ul className="space-y-4">
+                {unreadMessages.map((message) => (
+                  <li key={message.id} className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium">{message.content}</p>
+                      <p className="text-sm text-gray-500">
+                        {new Date(message.timestamp).toLocaleTimeString()}
+                      </p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        // Mark as read
+                        updateDoc(doc(db, 'messages', message.id), {
+                          read: true
+                        });
+                      }}
+                    >
+                      Mark as Read
+                    </Button>
                   </li>
                 ))}
               </ul>
@@ -173,12 +333,51 @@ const ExpertDashboard = () => {
         </Card>
       </div>
 
-      {/* Video Call Modal */}
-      <Suspense fallback={<LoadingSpinner />}>
-        {isVideoCallModalOpen && <VideoRoom expertId={""} />}
-      </Suspense>
+      {/* Recent Earnings */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Earnings</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {earnings.length === 0 ? (
+            <p className="text-gray-500">No earnings yet</p>
+          ) : (
+            <div className="space-y-4">
+              {earnings.slice(0, 5).map((earning) => (
+                <div key={earning.id} className="flex justify-between items-center">
+                  <div>
+                    <p className="font-medium">₹{earning.amount}</p>
+                    <p className="text-sm text-gray-500">
+                      {new Date(earning.timestamp).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <p className="text-sm text-gray-500">Call ID: {earning.callId}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Active Call Room */}
+      {activeCallId && (
+        <VideoRoom
+          expertId={auth.currentUser?.uid || ''}
+          callId={activeCallId}
+          onEnd={() => handleEndCall(activeCallId)} onClose={function (): void {
+            throw new Error("Function not implemented.");
+          } }        />
+      )}
+
+      {/* Incoming Call Notifications */}
+      {pendingCalls.map((call) => (
+        <CallNotification
+          key={call.id}
+          call={call}
+          onAccept={() => handleAcceptCall(call.id)}
+          onReject={() => handleRejectCall(call.id)}
+        />
+      ))}
     </div>
   );
-};
-
-export default ExpertDashboard;
+}
