@@ -109,7 +109,7 @@ export default function ExpertCard({ expert, onStartChat, onStartVoiceCall, onSt
             </Button>
 
             <Button
-              variant="default"
+              variant="outline"
               size="sm"
               className="flex items-center gap-2"
               onClick={() => onStartVideoCall(expert.id)}
