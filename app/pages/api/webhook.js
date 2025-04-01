@@ -1,7 +1,7 @@
 export default function handler(req, res) {
     if (req.method === "GET") {
       // Verification challenge from Instagram
-      const VERIFY_TOKEN = "your_custom_verify_token";
+      const VERIFY_TOKEN = "IGAAJJ90O2ZCIRBZAE1jSUw1X0ZAxc19ZAbGliZAjU2LWNleTdhLTJPcXE3anZASVTZAhTWxYaGhQb1ZAEUU5uMHNybnc5UEJsaGRiS1hKdHdONWNabGlTNDFGMERISXdMN1A3VEY0dVJuRE95bWs0UVF3cDVLRE9yT3hJQ0hHZAm9IaVlkZAwZDZD";
       const { "hub.mode": mode, "hub.verify_token": token, "hub.challenge": challenge } = req.query;
   
       if (mode && token === VERIFY_TOKEN) {
