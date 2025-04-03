@@ -60,6 +60,7 @@ export default function HomePage() {
   }, []);
 
   return (
+    
     <div className="min-h-screen bg-black">
       {/* Hero Section with Slider */}
       <div className="relative h-[600px] w-full">

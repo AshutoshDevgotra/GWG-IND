@@ -15,6 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <head><meta name="facebook-domain-verification" content="jvmxewrxcmz4z577s2uv19cwdm31zl" /></head>
         <nav className="fixed w-full bg-primary/90 backdrop-blur-sm z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between h-16 items-center">
