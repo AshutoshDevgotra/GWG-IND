@@ -33,9 +33,9 @@ const testimonials = [
 const brands = ["Microsoft", "Amazon", "Google", "Tesla", "IBM", "Oracle"];
 
 const slides = [
-  "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=2070&h=600",
-  "https://images.unsplash.com/photo-1661956602116-aa6865609028?auto=format&fit=crop&q=80&w=2070&h=600",
-  "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?auto=format&fit=crop&q=80&w=2070&h=600"
+  "/images/Ux-banner.jpg",
+  "/images/personal-brand.jpg",
+  "/images/website-business.jpg",
 ];
 
 export default function HomePage() {
