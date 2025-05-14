@@ -1,253 +1,1221 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import { Menu, X, Building2, Megaphone, Bot, ChevronRight, Github, Twitter, Linkedin, Star, Quote, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { SubscribeForm } from "@/components/subscribe-form";
+import { useEffect, useRef, useState } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {
+  ChevronRight,
+  Star,
+  Check,
+  Phone,
+  ArrowRight,
+  Code,
+  Zap,
+  Clock,
+  Shield,
+  Database,
+  CheckCircle2,
+  Headphones,
+  Sparkles,
+  Users,
+  Rocket,
+  Award,
+  MessageSquare,
+} from "lucide-react"
+import { motion } from "framer-motion"
+import { useMobile } from "@/app//hooks/use-mobile"
+import { TechLogos } from "@/components/tech-logos"
+import { RazorpayCheckout } from "@/components/razorpay-checkout"
+import { CountdownTimer } from "@/components/countdown-timer"
+import { BidForm } from "@/components/bid-form"
+import { InstantCallModal } from "@/components/instant-call-modal"
+import { CircuitBoardPattern } from "@/components/circuit-board-pattern"
 
-const testimonials = [
-  {
-    name: "Sarah Johnson",
-    role: "CEO, Microsoft Azure Division",
-    content: "The brand building services transformed our cloud solutions completely. Their innovative approach sets them apart.",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150&h=150",
-    rating: 5
-  },
-  {
-    name: "Michael Chen",
-    role: "Marketing Director, AWS",
-    content: "Their AI solutions helped us automate our enterprise systems with remarkable efficiency.",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=150&h=150",
-    rating: 5
-  },
-  {
-    name: "Emma Williams",
-    role: "Founder, Tesla AI",
-    content: "The marketing strategies they implemented revolutionized our approach to AI integration.",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=150&h=150",
-    rating: 5
-  }
-];
-
-const brands = ["Microsoft", "Amazon", "Google", "Tesla", "IBM", "Oracle"];
-
-const slides = [
-  "/images/Ux-banner.jpg",
-  "/images/personal-brand.jpg",
-  "/images/website-business.jpg",
-];
-
-export default function HomePage() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [scrollY, setScrollY] = useState(0);
+export default function Home() {
+  // const isMobile = useMobile()
+  const [scrollY, setScrollY] = useState(0)
+  const heroRef = useRef<HTMLDivElement>(null)
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [showCallModal, setShowCallModal] = useState(false)
+  const [currentPlan, setCurrentPlan] = useState("basic")
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000);
-    
     const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-    
-    window.addEventListener("scroll", handleScroll);
-    
-    return () => {
-      clearInterval(timer);
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+      setScrollY(window.scrollY)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  const parallaxOffset = scrollY * 0.5
+
+  const handlePaymentClick = (plan: string) => {
+    setCurrentPlan(plan)
+    setShowPaymentModal(true)
+  }
+
+  const handleInstantCallClick = () => {
+    setShowCallModal(true)
+  }
 
   return (
-    
-    <div className="min-h-screen bg-black">
-      {/* Hero Section with Slider */}
-      <div className="relative h-[600px] w-full">
-        {slides.map((slide, index) => (
-          <div
-            key={index}
-            className={`absolute top-0 left-0 w-full h-full transition-opacity duration-1000 ${
-              currentSlide === index ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <div
-              className="w-full h-full bg-cover bg-center"
-              style={{ backgroundImage: `url(${slide})` }}
+    <div className="min-h-screen bg-[#050714] text-white overflow-hidden">
+      {/* Circuit Board Background Pattern */}
+      <CircuitBoardPattern className="fixed inset-0 opacity-5 pointer-events-none" />
+
+      {/* Navbar */}
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#050714]/80 border-b border-indigo-500/10">
+        <div className="container mx-auto py-4 px-4 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 flex items-center justify-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-grid-pattern opacity-30"></div>
+              <span className="font-bold text-xl relative z-10">G</span>
+            </div>
+            <span className="font-bold text-xl">GrowWithGarry.in</span>
+          </div>
+          <nav className="hidden md:flex items-center gap-8">
+            <Link href="#features" className="text-gray-300 hover:text-white transition-colors">
+              Features
+            </Link>
+            <Link href="#portfolio" className="text-gray-300 hover:text-white transition-colors">
+              Portfolio
+            </Link>
+            <Link href="#pricing" className="text-gray-300 hover:text-white transition-colors">
+              Pricing
+            </Link>
+            <Link href="#contact" className="text-gray-300 hover:text-white transition-colors">
+              Contact
+            </Link>
+          </nav>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              className="border-indigo-500/20 text-white hover:bg-indigo-500/10 transition-all duration-300 hidden md:flex"
+              onClick={handleInstantCallClick}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-black/50">
-                <div className="max-w-7xl mx-auto px-4 h-full flex items-center">
-                  <div className="text-white animate-fade-in">
-                    <h1 className="text-6xl font-bold mb-4 bg-clip-text text-transparent bg-[#e8c288] ">
-                      Transform Your Brand
-                    </h1>
-                    <p className="text-xl mb-8 text-white animate-fade-in opacity-0 [animation-delay:200ms]">
-                      Innovative solutions for brand building, marketing, and AI integration
-                    </p>
-                    <a href="/experts">
-                      <Button size="lg" className="bg-[#227002] hover:from-[#227002] hover:to-[#e8c288] text-white transition-all duration-300 transform hover:scale-105">
-                        Get Started <ChevronRight className="ml-2" />
-                      </Button>
-                    </a>
+              <Phone className="h-4 w-4 mr-2" />
+              Instant Call
+            </Button>
+            <Button className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 hover:shadow-lg hover:shadow-indigo-500/20 transition-all duration-300 border border-indigo-500/20">
+              Get Started
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section
+        ref={heroRef}
+        className="relative overflow-hidden py-20 md:py-32"
+        style={{
+          background: "radial-gradient(circle at 50% 50%, rgba(79, 70, 229, 0.15) 0%, transparent 50%)",
+        }}
+      >
+        {/* Floating Elements */}
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-indigo-600/10 rounded-full filter blur-3xl animate-float"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-purple-600/10 rounded-full filter blur-3xl animate-float delay-700"></div>
+
+        {/* Tech Elements */}
+        <div
+          className="absolute top-20 left-10 opacity-20 hidden lg:block"
+          style={{ transform: `translateY(${parallaxOffset * 0.2}px)` }}
+        >
+          <Code className="w-16 h-16 text-indigo-400" />
+        </div>
+        <div
+          className="absolute bottom-20 right-10 opacity-20 hidden lg:block"
+          style={{ transform: `translateY(${-parallaxOffset * 0.3}px)` }}
+        >
+          <Database className="w-16 h-16 text-purple-400" />
+        </div>
+
+        {/* 3D Geometric Shapes */}
+        <div className="absolute -top-10 -right-10 w-40 h-40 opacity-30 hidden lg:block">
+          <div className="w-full h-full border border-indigo-500/30 rounded-lg transform rotate-45"></div>
+          <div className="w-full h-full border border-purple-500/30 rounded-lg transform rotate-12 absolute top-0"></div>
+          <div className="w-full h-full border border-blue-500/30 rounded-lg transform -rotate-12 absolute top-0"></div>
+        </div>
+
+        <div className="absolute -bottom-10 -left-10 w-40 h-40 opacity-30 hidden lg:block">
+          <div className="w-full h-full border border-indigo-500/30 rounded-full"></div>
+          <div className="w-full h-full border border-purple-500/30 rounded-full transform scale-75 absolute top-0"></div>
+          <div className="w-full h-full border border-blue-500/30 rounded-full transform scale-50 absolute top-0"></div>
+        </div>
+
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="max-w-4xl mx-auto text-center"
+          >
+            <div className="inline-block mb-4 px-4 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300">
+              <span className="mr-2">🚀</span> Next-Gen Web Development
+            </div>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400 leading-tight">
+              Launch Beautiful, Powerful Landing Pages – Starting at ₹5000
+            </h1>
+            <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
+              Get a fast, secure, and scalable landing page with email & database integration, built using the latest
+              technologies.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 text-lg py-6 px-8 rounded-xl border border-indigo-500/20 group"
+                onClick={() => handlePaymentClick("basic")}
+              >
+                Pay ₹1250 & Start Now
+                <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+              <Button
+                variant="outline"
+                className="border-indigo-500/20 text-white hover:bg-indigo-500/10 text-lg py-6 px-8 rounded-xl transition-all duration-300"
+                onClick={handleInstantCallClick}
+              >
+                <Headphones className="mr-2 h-5 w-5" />
+                Get Instant Call
+              </Button>
+            </div>
+            <div className="mt-6 flex items-center justify-center gap-4 text-sm text-gray-400">
+              <div className="flex items-center">
+                <CheckCircle2 className="h-4 w-4 text-green-500 mr-1" />
+                48hr Delivery
+              </div>
+              <div className="flex items-center">
+                <CheckCircle2 className="h-4 w-4 text-green-500 mr-1" />
+                100% Satisfaction
+              </div>
+              <div className="flex items-center">
+                <CheckCircle2 className="h-4 w-4 text-green-500 mr-1" />
+                24/7 Support
+              </div>
+            </div>
+          </motion.div>
+
+          {/* 3D Mockup */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="mt-16 max-w-5xl mx-auto relative"
+          >
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#050714] z-10 h-1/4 bottom-0"></div>
+            <div className="relative">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl opacity-30 blur-sm"></div>
+              <div className="relative bg-gray-900/80 backdrop-blur-sm p-1 rounded-xl border border-indigo-500/20 overflow-hidden">
+                <Image
+                  src="/placeholder.svg?height=600&width=1200"
+                  alt="Website Mockup"
+                  width={1200}
+                  height={600}
+                  className="w-full h-auto rounded-lg"
+                />
+
+                {/* Code overlay effect */}
+                <div className="absolute inset-0 bg-[url('/placeholder.svg?height=600&width=1200')] bg-cover opacity-5 mix-blend-overlay"></div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Instant Booking Section - NEW */}
+      <section className="py-16 relative overflow-hidden">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="max-w-5xl mx-auto bg-gradient-to-br from-indigo-900/20 to-purple-900/20 rounded-2xl p-8 backdrop-blur-sm border border-indigo-500/20 relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+            <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+              <div className="flex-1">
+                <div className="inline-block mb-4 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400">
+                  <Clock className="h-4 w-4 inline mr-1" /> Limited Time Offer
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold mb-4">
+                  Book Your Project Now, Get a Call Within 30 Minutes
+                </h2>
+                <p className="text-gray-300 mb-6">
+                  Pay just ₹500 to reserve your spot in our development queue and get an instant consultation call
+                  within 30 minutes, even on weekends!
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button
+                    className="bg-green-600 hover:bg-green-700 transition-all duration-300 border border-green-500/20"
+                    onClick={() => handlePaymentClick("instant")}
+                  >
+                    Book for ₹500 Now
+                  </Button>
+                  <div className="flex items-center text-gray-400 text-sm">
+                    <CountdownTimer minutes={30} seconds={0} />
+                    <span className="ml-2">until next slot</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex-1 flex justify-center">
+                <div className="relative">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-full blur"></div>
+                  <div className="relative bg-gray-900/80 backdrop-blur-sm p-6 rounded-xl border border-green-500/20 text-center">
+                    <Headphones className="h-16 w-16 mx-auto mb-4 text-green-400" />
+                    <div className="text-xl font-bold mb-2">Instant Consultation</div>
+                    <div className="text-gray-400 mb-4">Our expert will call you within 30 minutes</div>
+                    <div className="flex justify-center">
+                      <div className="flex items-center gap-1 text-sm">
+                        <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></div>
+                        <span className="text-green-400">12 slots available today</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
-      
-      {/* Brands Marquee */}
-      <div className="bg-[#111111] py-12 overflow-hidden">
-        <div className="animate-fade-up opacity-0 [animation-delay:400ms]">
-          <h3 className="text-2xl font-semibold text-center mb-8 bg-clip-text text-transparent bg-[#e8c288] ">
-            Trusted by Industry Leaders
-          </h3>
-          <div className="flex space-x-12 animate-[scroll_25s_linear_infinite]">
-            {[...brands, ...brands].map((brand, index) => (
-              <div key={index} className="flex items-center min-w-[200px]">
-                <span className="text-xl font-semibold bg-clip-text text-transparent bg-[#e8c288] ">{brand}</span>
-              </div>
-            ))}
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </section>
 
-      {/* Services Section */}
-      <section id="services" className="py-20 bg-black">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 
-            className={`text-3xl font-bold text-center mb-12 bg-clip-text text-transparent bg-[#e8c288]  transform transition-all duration-700 ${
-              scrollY > 300 ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
-            }`}
+      {/* USP Section */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
           >
-            Our Services
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 inline-block">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400">
+                The GrowWithGarry Advantage
+              </span>
+            </h2>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              What makes our development process unique and powerful
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {[
-              { icon: Building2, title: "Brand Building", desc: "Create a powerful brand identity that resonates with your audience." },
-              { icon: Megaphone, title: "Marketing", desc: "Strategic marketing solutions to grow your business." },
-              { icon: Bot, title: "AI Agents", desc: "Custom AI solutions to automate and enhance your operations." }
-            ].map((service, index) => (
-              <Card 
-                key={index} 
-                className={`p-6 bg-gradient-to-b from-black to-[#111111] border-[#e8c288]/30 hover:border-[#e8c288] transition-all duration-500 transform hover:scale-105 group hover:shadow-[0_0_15px_rgba(232,194,136,0.3)] ${
-                  scrollY > 400 ? `opacity-100 translate-y-0 [transition-delay:${index * 200}ms]` : "opacity-0 translate-y-10"
-                }`}
+              {
+                icon: <Zap className="h-8 w-8 text-indigo-400" />,
+                title: "AI-Enhanced Development",
+                description:
+                  "We leverage cutting-edge AI tools to accelerate development while maintaining quality, reducing costs and time-to-market.",
+              },
+              {
+                icon: <Clock className="h-8 w-8 text-purple-400" />,
+                title: "48-Hour Turnaround",
+                description:
+                  "Most landing pages are delivered within 48 hours of payment, getting your business online faster than traditional agencies.",
+              },
+              {
+                icon: <Shield className="h-8 w-8 text-blue-400" />,
+                title: "Future-Proof Technology",
+                description:
+                  "Built with the latest tech stack ensuring your site remains fast, secure and scalable as your business grows.",
+              },
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
               >
-                <service.icon className="h-12 w-12 mb-4 text-[#e8c288] group-hover:text-[#227002] transition-colors duration-300" />
-                <h3 className="text-xl font-semibold mb-2 text-white">{service.title}</h3>
-                <p className="text-gray-400 group-hover:text-white">{service.desc}</p>
-                <div className="mt-4 w-0 group-hover:w-full h-0.5 bg-[#e8c288] transition-all duration-500"></div>
-              </Card>
+                <Card className="bg-gradient-to-br from-gray-900 to-gray-950 border-0 p-8 h-full hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 hover:-translate-y-1 backdrop-blur-sm relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/5 via-purple-600/5 to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 blur opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+
+                  <div className="relative z-10">
+                    <div className="bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-xl p-3 inline-block mb-4">
+                      {feature.icon}
+                    </div>
+                    <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
+                    <p className="text-gray-400">{feature.description}</p>
+                  </div>
+                </Card>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section id="testimonials" className="py-20 bg-[#111111]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 
-            className={`text-3xl font-bold text-center mb-12 bg-clip-text text-transparent bg-[#e8c288]  transform transition-all duration-700 ${
-              scrollY > 600 ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
-            }`}
+      {/* Technologies Section */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/5 to-purple-900/5"></div>
+
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
           >
-            What Our Clients Say
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <Card 
-                key={index} 
-                className={`p-6 bg-black border border-[#227002]/30 hover:border-[#227002] transition-all duration-500 transform hover:scale-105 hover:shadow-[0_0_15px_rgba(34,112,2,0.3)] ${
-                  scrollY > 700 ? `opacity-100 translate-y-0 [transition-delay:${index * 200}ms]` : "opacity-0 translate-y-10"
-                }`}
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Technologies We Use</h2>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              Built with the latest and most powerful technologies for performance and scalability
+            </p>
+          </motion.div>
+
+          <TechLogos />
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="py-20 relative overflow-hidden">
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">What&apos;s Included (₹5000 Plan)</h2>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              Everything you need to launch your online presence with a professional landing page
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {[
+              {
+                title: "Custom Designed Landing Page",
+                description: "Professionally designed landing page tailored to your brand and business goals.",
+              },
+              {
+                title: "Email List Storage",
+                description: "Integrate with Mailchimp, Firebase, or custom database for lead collection.",
+              },
+              {
+                title: "Database Integration",
+                description: "Connect to Firebase, AWS, or other database solutions for data management.",
+              },
+              {
+                title: "Razorpay Payment Button",
+                description: "Accept payments directly on your site with secure Razorpay integration.",
+              },
+              {
+                title: "Responsive, Fast, SEO-Friendly",
+                description: "Optimized for all devices, lightning-fast loading, and search engine visibility.",
+              },
+              {
+                title: "Add-on: Chatbots, LLMs, Auth",
+                description: "Optional AI chatbots, language models, and authentication systems available.",
+              },
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
               >
-                <Quote className="h-8 w-8 mb-4 text-[#e8c288] opacity-70" />
-                <div className="flex items-center mb-4">
-                  <img
-                    src={testimonial.image}
-                    alt={testimonial.name}
-                    className="w-12 h-12 rounded-full object-cover ring-2 ring-[#e8c288]"
-                  />
-                  <div className="ml-4">
-                    <h4 className="font-semibold text-white">{testimonial.name}</h4>
-                    <p className="text-sm text-[#e8c288]">{testimonial.role}</p>
+                <Card className="bg-gradient-to-br from-gray-900 to-gray-950 border-0 p-6 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 hover:-translate-y-1 backdrop-blur-sm relative overflow-hidden group h-full">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 blur opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                  <div className="relative z-10">
+                    <div className="flex items-start gap-4">
+                      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full p-2 mt-1">
+                        <Check className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                        <p className="text-gray-400">{feature.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-indigo-900/10 to-purple-900/10"></div>
+
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Choose Your Plan</h2>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              Flexible options to suit your business needs and budget
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {/* Basic Plan */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-xl blur opacity-70"></div>
+              <div className="relative bg-gray-900/80 p-8 rounded-xl backdrop-blur-sm border border-indigo-500/20 h-full flex flex-col">
+                <h3 className="text-xl font-bold mb-2">Basic Landing Page</h3>
+                <div className="text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400">
+                  ₹5,000
+                </div>
+                <p className="text-gray-400 mb-6">Pay just ₹1,250 upfront</p>
+                <ul className="space-y-3 mb-8 flex-grow">
+                  <li className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-green-500 mt-0.5" />
+                    <span>Single page design</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-green-500 mt-0.5" />
+                    <span>Mobile responsive</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-green-500 mt-0.5" />
+                    <span>Contact form</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-green-500 mt-0.5" />
+                    <span>Basic SEO setup</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-green-500 mt-0.5" />
+                    <span>48-hour delivery</span>
+                  </li>
+                </ul>
+                <Button
+                  className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 border border-indigo-500/20 w-full"
+                  onClick={() => handlePaymentClick("basic")}
+                >
+                  Pay ₹1,250 Now
+                </Button>
+              </div>
+            </motion.div>
+
+            {/* Premium Plan */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/30 to-blue-500/30 rounded-xl blur opacity-80"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-xl blur-xl opacity-80"></div>
+              <div className="relative bg-gray-900/80 p-8 rounded-xl backdrop-blur-sm border border-purple-500/30 h-full flex flex-col">
+                <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">
+                  POPULAR
+                </div>
+                <h3 className="text-xl font-bold mb-2">Premium Website</h3>
+                <div className="text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400">
+                  ₹12,000
+                </div>
+                <p className="text-gray-400 mb-6">Pay just ₹3,000 upfront</p>
+                <ul className="space-y-3 mb-8 flex-grow">
+                  <li className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-green-500 mt-0.5" />
+                    <span>Multi-page website (up to 5 pages)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-green-500 mt-0.5" />
+                    <span>Advanced design & animations</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-green-500 mt-0.5" />
+                    <span>Blog/content management</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-green-500 mt-0.5" />
+                    <span>Payment integration</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-green-500 mt-0.5" />
+                    <span>Advanced SEO optimization</span>
+                  </li>
+                </ul>
+                <Button
+                  className="bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 border border-purple-500/20 w-full"
+                  onClick={() => handlePaymentClick("premium")}
+                >
+                  Pay ₹3,000 Now
+                </Button>
+              </div>
+            </motion.div>
+
+            {/* Custom Plan */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-xl blur opacity-70"></div>
+              <div className="relative bg-gray-900/80 p-8 rounded-xl backdrop-blur-sm border border-blue-500/20 h-full flex flex-col">
+                <h3 className="text-xl font-bold mb-2">Custom Solution</h3>
+                <div className="text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
+                  Custom
+                </div>
+                <p className="text-gray-400 mb-6">25% upfront payment</p>
+                <ul className="space-y-3 mb-8 flex-grow">
+                  <li className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-green-500 mt-0.5" />
+                    <span>Custom web application</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-green-500 mt-0.5" />
+                    <span>E-commerce functionality</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-green-500 mt-0.5" />
+                    <span>User authentication</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-green-500 mt-0.5" />
+                    <span>Custom database integration</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-green-500 mt-0.5" />
+                    <span>Ongoing support available</span>
+                  </li>
+                </ul>
+                <Button
+                  variant="outline"
+                  className="border-blue-500/20 text-white hover:bg-blue-500/10 transition-all duration-300 w-full"
+                  onClick={handleInstantCallClick}
+                >
+                  Get Custom Quote
+                </Button>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Custom Bidding Section - NEW */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="max-w-5xl mx-auto"
+          >
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
+                  Name Your Price
+                </span>
+              </h2>
+              <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+                Have a specific budget? Submit your project details and proposed price - we might accept your offer!
+              </p>
+            </div>
+
+            <div className="relative">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-xl blur"></div>
+              <div className="relative bg-gray-900/80 p-8 rounded-xl backdrop-blur-sm border border-blue-500/20">
+                <Tabs defaultValue="website" className="w-full">
+                  <TabsList className="grid grid-cols-3 mb-8">
+                    <TabsTrigger value="website">Website</TabsTrigger>
+                    <TabsTrigger value="ecommerce">E-commerce</TabsTrigger>
+                    <TabsTrigger value="webapp">Web App</TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="website" className="mt-0">
+                    <BidForm projectType="website" />
+                  </TabsContent>
+
+                  <TabsContent value="ecommerce" className="mt-0">
+                    <BidForm projectType="ecommerce" />
+                  </TabsContent>
+
+                  <TabsContent value="webapp" className="mt-0">
+                    <BidForm projectType="webapp" />
+                  </TabsContent>
+                </Tabs>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Portfolio Section */}
+      <section id="portfolio" className="py-20 relative overflow-hidden">
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Portfolio</h2>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">Check out some of our recent projects</p>
+          </motion.div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {[
+              {
+                title: "TechGuru E-Commerce",
+                tag: "eCommerce",
+                image: "/placeholder.svg?height=300&width=400",
+                description: "A modern e-commerce platform for a tech gadget retailer with 200+ products.",
+              },
+              {
+                title: "CloudSync Dashboard",
+                tag: "SaaS",
+                image: "/placeholder.svg?height=300&width=400",
+                description: "Admin dashboard for a cloud storage service with real-time analytics.",
+              },
+              {
+                title: "CreativeMinds Agency",
+                tag: "Agency",
+                image: "/placeholder.svg?height=300&width=400",
+                description: "Brand website for a creative agency showcasing their portfolio and services.",
+              },
+              {
+                title: "DesignMaster Portfolio",
+                tag: "Portfolio",
+                image: "/placeholder.svg?height=300&width=400",
+                description: "Personal portfolio for a UI/UX designer with interactive project showcases.",
+              },
+              {
+                title: "SpiceRoute Restaurant",
+                tag: "Booking",
+                image: "/placeholder.svg?height=300&width=400",
+                description: "Restaurant website with online booking system and menu management.",
+              },
+              {
+                title: "LearnQuest Academy",
+                tag: "EdTech",
+                image: "/placeholder.svg?height=300&width=400",
+                description: "Educational platform with course management and student progress tracking.",
+              },
+            ].map((project, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="group relative overflow-hidden rounded-xl hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-500"
+              >
+                <div className="relative">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="relative border border-indigo-500/10 rounded-xl overflow-hidden">
+                    <Image
+                      src={project.image || "/placeholder.svg"}
+                      alt={project.title}
+                      width={400}
+                      height={300}
+                      className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent opacity-80"></div>
+                    <div className="absolute bottom-0 left-0 p-6">
+                      <span className="inline-block px-3 py-1 bg-indigo-500/30 backdrop-blur-sm rounded-full text-sm mb-2 border border-indigo-500/20">
+                        {project.tag}
+                      </span>
+                      <h3 className="text-xl font-bold">{project.title}</h3>
+                    </div>
+
+                    {/* Hover overlay */}
+                    <div className="absolute inset-0 bg-indigo-600/20 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-6">
+                      <p className="text-white mb-4 text-center">{project.description}</p>
+                      <Button className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all duration-300">
+                        View Project
+                      </Button>
+                    </div>
                   </div>
                 </div>
-                <p className="text-gray-300">{testimonial.content}</p>
-                <div className="flex mt-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 text-[#e8c288] fill-[#e8c288]" />
-                  ))}
-                </div>
-              </Card>
+              </motion.div>
             ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <Button
+              variant="outline"
+              className="border-indigo-500/20 text-white hover:bg-indigo-500/10 text-lg py-6 px-8 rounded-xl transition-all duration-300"
+            >
+              View Full Portfolio
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* Subscribe Section */}
-      <section className="bg-[#e8c288] py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div 
-            className={`text-center transform transition-all duration-700 ${
-              scrollY > 1000 ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
-            }`}
+      {/* Process Section - NEW */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/5 to-purple-900/5"></div>
+
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
           >
-            <h2 className="text-3xl font-bold text-white mb-4">Stay Updated</h2>
-            <p className="text-white/80 mb-8">Subscribe to our newsletter for the latest updates and insights.</p>
-            <SubscribeForm />
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Simple Process</h2>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">From concept to launch in just a few simple steps</p>
+          </motion.div>
+
+          <div className="max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-4 gap-8">
+              {[
+                {
+                  icon: <MessageSquare className="h-8 w-8 text-indigo-400" />,
+                  title: "1. Consultation",
+                  description: "We discuss your requirements and goals to understand your vision.",
+                },
+                {
+                  icon: <Sparkles className="h-8 w-8 text-purple-400" />,
+                  title: "2. Design",
+                  description: "Our designers create mockups for your approval before development.",
+                },
+                {
+                  icon: <Code className="h-8 w-8 text-blue-400" />,
+                  title: "3. Development",
+                  description: "We build your site using the latest technologies and best practices.",
+                },
+                {
+                  icon: <Rocket className="h-8 w-8 text-green-400" />,
+                  title: "4. Launch",
+                  description: "Your site goes live with our support to ensure everything runs smoothly.",
+                },
+              ].map((step, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  className="relative"
+                >
+                  {index < 3 && (
+                    <div className="absolute top-10 left-1/2 w-full h-0.5 bg-gradient-to-r from-indigo-500/50 to-purple-500/50 hidden md:block"></div>
+                  )}
+                  <div className="bg-gradient-to-br from-gray-900 to-gray-950 border-0 p-6 rounded-xl hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 hover:-translate-y-1 backdrop-blur-sm relative overflow-hidden group h-full">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 blur opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                    <div className="relative z-10 flex flex-col items-center text-center">
+                      <div className="bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-full p-4 mb-4">
+                        {step.icon}
+                      </div>
+                      <h3 className="text-xl font-bold mb-2">{step.title}</h3>
+                      <p className="text-gray-400">{step.description}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Reviews Section */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/5 to-purple-900/5"></div>
+
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">What Our Clients Say</h2>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              Hear from businesses who&apos;ve transformed their online presence with us
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {[
+              {
+                name: "Rohit Sharma",
+                company: "TechGuru Electronics",
+                location: "Delhi",
+                image: "/placeholder.svg?height=100&width=100",
+                review:
+                  "GrowWithGarry delivered our e-commerce site ahead of schedule. The design is beautiful and conversion rates have improved by 35% in the first month.",
+              },
+              {
+                name: "Aditi Rao",
+                company: "CreativeMinds Agency",
+                location: "Mumbai",
+                image: "/placeholder.svg?height=100&width=100",
+                review:
+                  "Working with Garry's team was a pleasure. They understood our requirements perfectly and delivered a stunning website that has helped us win more clients.",
+              },
+              {
+                name: "Karan Malhotra",
+                company: "CloudSync",
+                location: "Bangalore",
+                image: "/placeholder.svg?height=100&width=100",
+                review:
+                  "The landing page they built for our SaaS product helped us increase sign-ups by 40%. Their AI-enhanced development approach saved us weeks of time.",
+              },
+            ].map((review, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <Card className="bg-gradient-to-br from-gray-900 to-gray-950 border-0 p-8 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 backdrop-blur-sm relative overflow-hidden group h-full">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 blur opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                  <div className="relative z-10 flex flex-col items-center text-center">
+                    <div className="relative mb-4">
+                      <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full blur-sm"></div>
+                      <Image
+                        src={review.image || "/placeholder.svg"}
+                        alt={review.name}
+                        width={80}
+                        height={80}
+                        className="rounded-full relative z-10 border-2 border-indigo-500"
+                      />
+                    </div>
+                    <div className="flex mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-5 w-5 fill-yellow-500 text-yellow-500" />
+                      ))}
+                    </div>
+                    <p className="text-gray-300 mb-4">&quot;{review.review}&quot;</p>
+                    <div>
+                      <h4 className="font-semibold">{review.name}</h4>
+                      <p className="text-indigo-400 text-sm">{review.company}</p>
+                      <p className="text-gray-400 text-sm">{review.location}</p>
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-12 text-center">
+            <div className="inline-flex items-center gap-2 text-gray-400">
+              <Award className="h-5 w-5 text-yellow-500" />
+              <span>Rated 4.9/5 based on 200+ client reviews</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Quote Form Section */}
+      <section id="contact" className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-indigo-900/10 to-purple-900/10"></div>
+
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="max-w-3xl mx-auto"
+          >
+            <div className="relative">
+              <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-xl blur"></div>
+              <div className="relative bg-gray-900/80 p-8 md:p-12 rounded-xl backdrop-blur-sm border border-indigo-500/20">
+                <h2 className="text-3xl font-bold text-center mb-4">Request a Custom Quote</h2>
+                <p className="text-gray-400 text-center mb-8">
+                  Tell us about your project and we&apos;ll get back to you within 24 hours
+                </p>
+                <form className="space-y-6">
+                  <div className="grid sm:grid-cols-2 gap-6">
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">
+                        Name
+                      </label>
+                      <Input
+                        id="name"
+                        placeholder="Your name"
+                        className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
+                        Email
+                      </label>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="Your email"
+                        className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-white"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-6">
+                    <div>
+                      <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-1">
+                        Phone
+                      </label>
+                      <Input
+                        id="phone"
+                        placeholder="Your phone number"
+                        className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="website-type" className="block text-sm font-medium text-gray-300 mb-1">
+                        Type of Website
+                      </label>
+                      <select
+                        id="website-type"
+                        className="w-full rounded-md bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-white py-2 px-3"
+                      >
+                        <option>Landing Page</option>
+                        <option>E-Commerce</option>
+                        <option>Portfolio</option>
+                        <option>SaaS</option>
+                        <option>Other</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="budget" className="block text-sm font-medium text-gray-300 mb-1">
+                      Budget
+                    </label>
+                    <select
+                      id="budget"
+                      className="w-full rounded-md bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-white py-2 px-3"
+                    >
+                      <option>₹5,000 - ₹10,000</option>
+                      <option>₹10,000 - ₹25,000</option>
+                      <option>₹25,000 - ₹50,000</option>
+                      <option>₹50,000+</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-1">
+                      Message
+                    </label>
+                    <Textarea
+                      id="message"
+                      placeholder="Tell us about your project"
+                      className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-white min-h-[120px]"
+                    />
+                  </div>
+                  <Button className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 w-full py-6 text-lg rounded-xl border border-indigo-500/20">
+                    Request Quote
+                  </Button>
+                </form>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Support Section */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="max-w-3xl mx-auto text-center"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">Need help choosing a package?</h2>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button className="bg-green-600 hover:bg-green-700 transition-all duration-300 text-lg py-6 px-8 rounded-xl flex items-center gap-2 hover:shadow-lg hover:shadow-green-500/20">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-5 w-5"
+                >
+                  <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"></path>
+                </svg>
+                Chat with us on WhatsApp
+              </Button>
+              <Button
+                variant="outline"
+                className="border-indigo-500/20 text-white hover:bg-indigo-500/10 text-lg py-6 px-8 rounded-xl transition-all duration-300 flex items-center gap-2"
+                onClick={handleInstantCallClick}
+              >
+                <Phone className="h-5 w-5" />
+                Get Instant Call
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Trust Badges Section - NEW */}
+      <section className="py-10 relative overflow-hidden">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              {[
+                { icon: <Shield className="h-8 w-8 text-indigo-400" />, text: "Secure Payments" },
+                { icon: <Clock className="h-8 w-8 text-purple-400" />, text: "48hr Delivery" },
+                { icon: <Users className="h-8 w-8 text-blue-400" />, text: "200+ Happy Clients" },
+                { icon: <Award className="h-8 w-8 text-green-400" />, text: "100% Satisfaction" },
+              ].map((badge, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  className="flex flex-col items-center text-center"
+                >
+                  <div className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-full p-4 mb-3">
+                    {badge.icon}
+                  </div>
+                  <div className="text-gray-300">{badge.text}</div>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-black text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
+      <footer className="bg-[#030510] py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none"></div>
+
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="grid md:grid-cols-4 gap-12">
             <div>
-              <div className="flex items-center mb-4">
-                <span className="text-xl font-bold bg-clip-text text-transparent bg-[#e8c288] ">GwG</span>
+              <div className="flex items-center gap-2 mb-6">
+                <div className="h-10 w-10 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 flex items-center justify-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-grid-pattern opacity-30"></div>
+                  <span className="font-bold text-xl relative z-10">G</span>
+                </div>
+                <span className="font-bold text-xl">GrowWithGarry.in</span>
               </div>
-              <p className="text-gray-400">Transform your brand with our innovative solutions.</p>
+              <p className="text-gray-400 mb-6">
+                Professional landing pages and web development services at affordable prices.
+              </p>
+              <div className="flex gap-4">
+                {["twitter", "facebook", "instagram", "linkedin"].map((social) => (
+                  <a
+                    key={social}
+                    href="#"
+                    className="h-10 w-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors"
+                  >
+                    <span className="sr-only">{social}</span>
+                    <div className="h-5 w-5"></div>
+                  </a>
+                ))}
+              </div>
             </div>
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-[#e8c288]">Services</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li className="hover:text-[#227002] transition-colors cursor-pointer">Brand Building</li>
-                <li className="hover:text-[#227002] transition-colors cursor-pointer">Marketing</li>
-                <li className="hover:text-[#227002] transition-colors cursor-pointer">AI Agents</li>
+              <h3 className="font-bold text-lg mb-6">Services</h3>
+              <ul className="space-y-4">
+                <li>
+                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                    Landing Pages
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                    E-Commerce
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                    SaaS Development
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                    Custom Solutions
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-[#e8c288]">Company</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li className="hover:text-[#227002] transition-colors cursor-pointer">About Us</li>
-                <li className="hover:text-[#227002] transition-colors cursor-pointer">Careers</li>
-                <a href="/contact"><li className="hover:text-[#227002] transition-colors cursor-pointer">Contact</li></a>
+              <h3 className="font-bold text-lg mb-6">Company</h3>
+              <ul className="space-y-4">
+                <li>
+                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                    About Us
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                    Portfolio
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                    Testimonials
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                    Contact
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-[#e8c288]">Connect</h3>
-              <div className="flex space-x-4">
-                <a href="" className="text-gray-400 hover:text-[#227002] transition-colors">
-                  <Twitter className="h-6 w-6" />
-                </a>
-                <a href="https://www.linkedin.com/in/ashutosh-devgotra-284057269/" className="text-gray-400 hover:text-[#227002] transition-colors">
-                  <Linkedin className="h-6 w-6" />
-                </a>
-                <a href="https://github.com/AshutoshDevgotra" className="text-gray-400 hover:text-[#227002] transition-colors">
-                  <Github className="h-6 w-6" />
-                </a>
-              </div>
+              <h3 className="font-bold text-lg mb-6">Contact</h3>
+              <ul className="space-y-4">
+                <li className="text-gray-400">contact@growwithgarry.in</li>
+                <li className="text-gray-400">+91 98765 43210</li>
+                <li className="text-gray-400">Bangalore, India</li>
+              </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 BrandCraft. All rights reserved.</p>
+          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500">
+            <p>© {new Date().getFullYear()} GrowWithGarry.in. All rights reserved.</p>
           </div>
         </div>
       </footer>
+
+      {/* WhatsApp Floating Button */}
+      <a
+        href="#"
+        className="fixed bottom-6 right-6 bg-green-600 hover:bg-green-700 transition-all duration-300 rounded-full p-4 shadow-lg z-50 flex items-center justify-center group"
+      >
+        <div className="absolute -inset-1 bg-green-500/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="h-6 w-6 relative z-10"
+        >
+          <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"></path>
+        </svg>
+        <span className="sr-only">Chat on WhatsApp</span>
+      </a>
+
+      {/* Razorpay Payment Modal */}
+      {showPaymentModal && <RazorpayCheckout plan={currentPlan} onClose={() => setShowPaymentModal(false)} />}
+
+      {/* Instant Call Modal */}
+      {showCallModal && <InstantCallModal onClose={() => setShowCallModal(false)} />}
     </div>
-  );
+  )
 }
