@@ -668,7 +668,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* text-black Section */}
+      {/*OUR PORTFOLIO Section */}
       <section id="text-black" className="py-20 relative overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
           <motion.div
@@ -678,7 +678,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Our text-black</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Portfolio</h2>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">Check out some of our recent projects</p>
           </motion.div>
 
@@ -700,13 +700,13 @@ export default function Home() {
                 title: "CreativeMinds Agency",
                 tag: "Agency",
                 image: "/placeholder.svg?height=300&width=400",
-                description: "Brand website for a creative agency showcasing their text-black and services.",
+                description: "Brand website for a creative agency showcasing their portfolio and services.",
               },
               {
-                title: "DesignMaster text-black",
+                title: "DesignMaster portfolio",
                 tag: "text-black",
                 image: "/placeholder.svg?height=300&width=400",
-                description: "Personal text-black for a UI/UX designer with interactive project showcases.",
+                description: "Personal portfolio for a UI/UX designer with interactive project showcases.",
               },
               {
                 title: "SpiceRoute Restaurant",
@@ -761,12 +761,12 @@ export default function Home() {
           </div>
 
           <div className="text-center mt-12">
-            <a href="growithgarry.in/text-black" target="_blank" rel="noopener noreferrer">
+            <a href="growithgarry.in/portfolio" target="_blank" rel="noopener noreferrer">
             <Button
               variant="outline"
               className="border-indigo-500/20 text-black hover:bg-indigo-500/10 text-lg py-6 px-8 rounded-xl transition-all duration-300"
             >
-              View Full text-black
+              View Full Portfolio
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
             </a>
