@@ -83,8 +83,8 @@ export default function Home() {
             <Link href="#features" className="text-gray-300 hover:text-black transition-colors">
               Features
             </Link>
-            <Link href="#text-black" className="text-gray-300 hover:text-black transition-colors">
-              text-black
+            <Link href="#portfolio" className="text-gray-300 hover:text-black transition-colors">
+              portfolio
             </Link>
             <Link href="#pricing" className="text-gray-300 hover:text-black transition-colors">
               Pricing
