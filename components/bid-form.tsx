@@ -71,7 +71,7 @@ export function BidForm({ projectType }: BidFormProps) {
             id="name"
             placeholder="Your name"
             required
-            className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-white"
+            className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-black"
           />
         </div>
         <div>
@@ -83,7 +83,7 @@ export function BidForm({ projectType }: BidFormProps) {
             type="email"
             placeholder="Your email"
             required
-            className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-white"
+            className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-black"
           />
         </div>
       </div>
@@ -96,7 +96,7 @@ export function BidForm({ projectType }: BidFormProps) {
           id="project-description"
           placeholder="Describe your project requirements"
           required
-          className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-white min-h-[120px]"
+          className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-black min-h-[120px]"
         />
       </div>
 
@@ -132,7 +132,7 @@ export function BidForm({ projectType }: BidFormProps) {
           min="1"
           placeholder="Number of days"
           required
-          className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-white"
+          className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-black"
         />
       </div>
 

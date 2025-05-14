@@ -467,8 +467,8 @@ export default function ExpertRegisterPage() {
         <div className="absolute inset-0 bg-pattern opacity-10"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-white mb-4">Expert Registration</h1>
-            <p className="text-xl text-white/80 max-w-2xl mx-auto">
+            <h1 className="text-4xl font-bold text-black mb-4">Expert Registration</h1>
+            <p className="text-xl text-black/80 max-w-2xl mx-auto">
               Share your expertise from India's premier institutions
             </p>
           </div>

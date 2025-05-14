@@ -65,12 +65,12 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050714] text-white overflow-hidden">
+    <div className="min-h-screen bg-[#050714] text-black overflow-hidden">
       {/* Circuit Board Background Pattern */}
       <CircuitBoardPattern className="fixed inset-0 opacity-5 pointer-events-none" />
 
       {/* Navbar */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#050714]/80 border-b border-indigo-500/10">
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-black border-b border-indigo-500/10">
         <div className="container mx-auto py-4 px-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <div className="h-10 w-10 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 flex items-center justify-center relative overflow-hidden">
@@ -80,26 +80,26 @@ export default function Home() {
             <span className="font-bold text-xl">GrowWithGarry.in</span>
           </div>
           <nav className="hidden md:flex items-center gap-8">
-            <Link href="#features" className="text-gray-300 hover:text-white transition-colors">
+            <Link href="#features" className="text-gray-300 hover:text-black transition-colors">
               Features
             </Link>
-            <Link href="#portfolio" className="text-gray-300 hover:text-white transition-colors">
-              Portfolio
+            <Link href="#text-black" className="text-gray-300 hover:text-black transition-colors">
+              text-black
             </Link>
-            <Link href="#pricing" className="text-gray-300 hover:text-white transition-colors">
+            <Link href="#pricing" className="text-gray-300 hover:text-black transition-colors">
               Pricing
             </Link>
-            <Link href="#contact" className="text-gray-300 hover:text-white transition-colors">
+            <Link href="#contact" className="text-gray-300 hover:text-black transition-colors">
               Contact
             </Link>
           </nav>
           <div className="flex items-center gap-3">
             <Button
               variant="outline"
-              className="border-indigo-500/20 text-white hover:bg-indigo-500/10 transition-all duration-300 hidden md:flex"
+              className="border-indigo-500/20 text-black hover:bg-indigo-500/10 transition-all duration-300 hidden md:flex"
               onClick={handleInstantCallClick}
             >
-              <Phone className="h-4 w-4 mr-2" />
+              <Phone className="h-4 w-4 mr-2 text-black" />
               Instant Call
             </Button>
             <Button className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 hover:shadow-lg hover:shadow-indigo-500/20 transition-all duration-300 border border-indigo-500/20">
@@ -116,7 +116,7 @@ export default function Home() {
         style={{
           background: "radial-gradient(circle at 50% 50%, rgba(79, 70, 229, 0.15) 0%, transparent 50%)",
         }}
-      >
+      />
         {/* Floating Elements */}
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-indigo-600/10 rounded-full filter blur-3xl animate-float"></div>
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-purple-600/10 rounded-full filter blur-3xl animate-float delay-700"></div>
@@ -175,7 +175,7 @@ export default function Home() {
               </Button>
               <Button
                 variant="outline"
-                className="border-indigo-500/20 text-white hover:bg-indigo-500/10 text-lg py-6 px-8 rounded-xl transition-all duration-300"
+                className="border-indigo-500/20 text-black hover:bg-indigo-500/10 text-lg py-6 px-8 rounded-xl transition-all duration-300"
                 onClick={handleInstantCallClick}
               >
                 <Headphones className="mr-2 h-5 w-5" />
@@ -197,36 +197,41 @@ export default function Home() {
               </div>
             </div>
           </motion.div>
+          </div>
 
-          {/* 3D Mockup */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="mt-16 max-w-5xl mx-auto relative"
-          >
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#050714] z-10 h-1/4 bottom-0"></div>
-            <div className="relative">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl opacity-30 blur-sm"></div>
-              <div className="relative bg-gray-900/80 backdrop-blur-sm p-1 rounded-xl border border-indigo-500/20 overflow-hidden">
-                <Image
-                  src="/placeholder.svg?height=600&width=1200"
-                  alt="Website Mockup"
-                  width={1200}
-                  height={600}
-                  className="w-full h-auto rounded-lg"
-                />
+{/* 3D Mockup */}
+{/* 3D Mockup */}
+<motion.div
+  initial={{ opacity: 0, y: 40 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.8, delay: 0.3 }}
+  className="mt-16 max-w-5xl mx-auto h-full relative"
+>
+  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#050714] z-10 h-full bottom-10"></div>
+  <div className="relative">
+    <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl opacity-30 blur-sm"></div>
+    <div className="relative bg-gray-900/80 backdrop-blur-sm p-1 rounded-xl border border-indigo-500/20 overflow-hidden">
 
-                {/* Code overlay effect */}
-                <div className="absolute inset-0 bg-[url('/placeholder.svg?height=600&width=1200')] bg-cover opacity-5 mix-blend-overlay"></div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      {/* Wrapping the iframe in a clickable anchor tag */}
+      <a href="https://creatorhub-outx.vercel.app/" target="_blank" rel="noopener noreferrer">
+        <iframe
+          src="https://creatorhub-outx.vercel.app/"
+          title="Website Mockup"
+          width="100%" 
+          height="100%"  
+          className="w-full h-auto rounded-lg" 
+          style={{ border: 'none' }}
+        />
+      </a>
+
+    </div>
+  </div>
+</motion.div>
+
+
 
       {/* Instant Booking Section - NEW */}
-      <section className="py-16 relative overflow-hidden">
+      <section className="py-20 relative overflow-hidden">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -516,7 +521,7 @@ export default function Home() {
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/30 to-blue-500/30 rounded-xl blur opacity-80"></div>
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-xl blur-xl opacity-80"></div>
               <div className="relative bg-gray-900/80 p-8 rounded-xl backdrop-blur-sm border border-purple-500/30 h-full flex flex-col">
-                <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">
+                <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-600 to-blue-600 text-black text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">
                   POPULAR
                 </div>
                 <h3 className="text-xl font-bold mb-2">Premium Website</h3>
@@ -594,7 +599,7 @@ export default function Home() {
                 </ul>
                 <Button
                   variant="outline"
-                  className="border-blue-500/20 text-white hover:bg-blue-500/10 transition-all duration-300 w-full"
+                  className="border-blue-500/20 text-black hover:bg-blue-500/10 transition-all duration-300 w-full"
                   onClick={handleInstantCallClick}
                 >
                   Get Custom Quote
@@ -654,8 +659,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Portfolio Section */}
-      <section id="portfolio" className="py-20 relative overflow-hidden">
+      {/* text-black Section */}
+      <section id="text-black" className="py-20 relative overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -664,7 +669,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Portfolio</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Our text-black</h2>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">Check out some of our recent projects</p>
           </motion.div>
 
@@ -686,13 +691,13 @@ export default function Home() {
                 title: "CreativeMinds Agency",
                 tag: "Agency",
                 image: "/placeholder.svg?height=300&width=400",
-                description: "Brand website for a creative agency showcasing their portfolio and services.",
+                description: "Brand website for a creative agency showcasing their text-black and services.",
               },
               {
-                title: "DesignMaster Portfolio",
-                tag: "Portfolio",
+                title: "DesignMaster text-black",
+                tag: "text-black",
                 image: "/placeholder.svg?height=300&width=400",
-                description: "Personal portfolio for a UI/UX designer with interactive project showcases.",
+                description: "Personal text-black for a UI/UX designer with interactive project showcases.",
               },
               {
                 title: "SpiceRoute Restaurant",
@@ -735,7 +740,7 @@ export default function Home() {
 
                     {/* Hover overlay */}
                     <div className="absolute inset-0 bg-indigo-600/20 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-6">
-                      <p className="text-white mb-4 text-center">{project.description}</p>
+                      <p className="text-black mb-4 text-center">{project.description}</p>
                       <Button className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all duration-300">
                         View Project
                       </Button>
@@ -747,13 +752,15 @@ export default function Home() {
           </div>
 
           <div className="text-center mt-12">
+            <a href="growithgarry.in/text-black" target="_blank" rel="noopener noreferrer">
             <Button
               variant="outline"
-              className="border-indigo-500/20 text-white hover:bg-indigo-500/10 text-lg py-6 px-8 rounded-xl transition-all duration-300"
+              className="border-indigo-500/20 text-black hover:bg-indigo-500/10 text-lg py-6 px-8 rounded-xl transition-all duration-300"
             >
-              View Full Portfolio
+              View Full text-black
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
+            </a>
           </div>
         </div>
       </section>
@@ -945,7 +952,7 @@ export default function Home() {
                       <Input
                         id="name"
                         placeholder="Your name"
-                        className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-white"
+                        className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-black"
                       />
                     </div>
                     <div>
@@ -956,7 +963,7 @@ export default function Home() {
                         id="email"
                         type="email"
                         placeholder="Your email"
-                        className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-white"
+                        className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-black"
                       />
                     </div>
                   </div>
@@ -968,7 +975,7 @@ export default function Home() {
                       <Input
                         id="phone"
                         placeholder="Your phone number"
-                        className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-white"
+                        className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-black"
                       />
                     </div>
                     <div>
@@ -977,11 +984,11 @@ export default function Home() {
                       </label>
                       <select
                         id="website-type"
-                        className="w-full rounded-md bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-white py-2 px-3"
+                        className="w-full rounded-md bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-black py-2 px-3"
                       >
                         <option>Landing Page</option>
                         <option>E-Commerce</option>
-                        <option>Portfolio</option>
+                        <option>text-black</option>
                         <option>SaaS</option>
                         <option>Other</option>
                       </select>
@@ -993,7 +1000,7 @@ export default function Home() {
                     </label>
                     <select
                       id="budget"
-                      className="w-full rounded-md bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-white py-2 px-3"
+                      className="w-full rounded-md bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-black py-2 px-3"
                     >
                       <option>₹5,000 - ₹10,000</option>
                       <option>₹10,000 - ₹25,000</option>
@@ -1008,7 +1015,7 @@ export default function Home() {
                     <Textarea
                       id="message"
                       placeholder="Tell us about your project"
-                      className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-white min-h-[120px]"
+                      className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-black min-h-[120px]"
                     />
                   </div>
                   <Button className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 w-full py-6 text-lg rounded-xl border border-indigo-500/20">
@@ -1052,7 +1059,7 @@ export default function Home() {
               </Button>
               <Button
                 variant="outline"
-                className="border-indigo-500/20 text-white hover:bg-indigo-500/10 text-lg py-6 px-8 rounded-xl transition-all duration-300 flex items-center gap-2"
+                className="border-indigo-500/20 text-black hover:bg-indigo-500/10 text-lg py-6 px-8 rounded-xl transition-all duration-300 flex items-center gap-2"
                 onClick={handleInstantCallClick}
               >
                 <Phone className="h-5 w-5" />
@@ -1127,22 +1134,22 @@ export default function Home() {
               <h3 className="font-bold text-lg mb-6">Services</h3>
               <ul className="space-y-4">
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <a href="#" className="text-gray-400 hover:text-black transition-colors">
                     Landing Pages
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <a href="#" className="text-gray-400 hover:text-black transition-colors">
                     E-Commerce
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <a href="#" className="text-gray-400 hover:text-black transition-colors">
                     SaaS Development
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <a href="#" className="text-gray-400 hover:text-black transition-colors">
                     Custom Solutions
                   </a>
                 </li>
@@ -1152,22 +1159,22 @@ export default function Home() {
               <h3 className="font-bold text-lg mb-6">Company</h3>
               <ul className="space-y-4">
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <a href="#" className="text-gray-400 hover:text-black transition-colors">
                     About Us
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Portfolio
+                  <a href="#" className="text-gray-400 hover:text-black transition-colors">
+                    text-black
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <a href="#" className="text-gray-400 hover:text-black transition-colors">
                     Testimonials
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <a href="#" className="text-gray-400 hover:text-black transition-colors">
                     Contact
                   </a>
                 </li>

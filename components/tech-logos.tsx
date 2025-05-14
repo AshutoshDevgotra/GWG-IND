@@ -133,7 +133,7 @@ export function TechLogos() {
                 {tech.svg}
               </div>
             </div>
-            <span className="text-gray-300 group-hover:text-white transition-colors">{tech.name}</span>
+            <span className="text-gray-300 group-hover:text-black transition-colors">{tech.name}</span>
           </div>
         </motion.div>
       ))}

@@ -125,7 +125,7 @@ export function ChatWindow({ expertId, userId, onClose }: ChatWindowProps) {
               <div
                 className={`max-w-[80%] p-3 rounded-lg ${
                   message.senderId === userId
-                    ? 'bg-blue-500 text-white'
+                    ? 'bg-blue-500 text-black'
                     : 'bg-gray-100'
                 } break-words`}
               >

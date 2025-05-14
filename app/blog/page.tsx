@@ -42,7 +42,7 @@ export default function Blog() {
   };
 
   return (
-    <div className="bg-[#0f0f0f] text-white min-h-screen px-6 py-10">
+    <div className="bg-[#0f0f0f] text-black min-h-screen px-6 py-10">
       <Head>
         <title>GrowWithGarry Blog | Website Development & SaaS News India</title>
         <meta name="description" content="Latest blogs on SaaS development, professional website design, and landing page building services in India." />

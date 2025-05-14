@@ -44,7 +44,7 @@ export default function Portfolio() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white flex flex-col items-center p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-black flex flex-col items-center p-6 relative overflow-hidden">
       {/* Custom CSS for animations */}
       <style jsx global>{`
         @keyframes gradient {
@@ -362,7 +362,7 @@ export default function Portfolio() {
                 whileTap={{ scale: 0.95 }}
               >
                 <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gray-900 border-2 border-gray-700 group-hover:border-green-500 transition-colors duration-300">
-                  <FaGithub className="text-3xl text-gray-300 group-hover:text-white transition-colors duration-300" />
+                  <FaGithub className="text-3xl text-gray-300 group-hover:text-black transition-colors duration-300" />
                 </div>
                 <p className="mt-2 text-gray-400 group-hover:text-green-400 transition-colors duration-300">GitHub</p>
               </motion.a>

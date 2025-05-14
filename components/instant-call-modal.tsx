@@ -39,7 +39,7 @@ export function InstantCallModal({ onClose }: InstantCallModalProps) {
       <Card className="bg-gray-900 border border-indigo-500/20 w-full max-w-md relative overflow-hidden">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-xl blur"></div>
         <div className="relative p-6">
-          <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+          <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-black transition-colors">
             <X className="h-5 w-5" />
           </button>
 
@@ -62,7 +62,7 @@ export function InstantCallModal({ onClose }: InstantCallModalProps) {
                     onChange={handleInputChange}
                     required
                     placeholder="Enter your name"
-                    className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-white"
+                    className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-black"
                   />
                 </div>
                 <div>
@@ -76,7 +76,7 @@ export function InstantCallModal({ onClose }: InstantCallModalProps) {
                     onChange={handleInputChange}
                     required
                     placeholder="Enter your phone number"
-                    className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-white"
+                    className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-black"
                   />
                 </div>
                 <Button
@@ -115,7 +115,7 @@ export function InstantCallModal({ onClose }: InstantCallModalProps) {
                 <Button
                   onClick={() => setStep("form")}
                   variant="outline"
-                  className="flex-1 border-gray-700 text-white hover:bg-gray-800"
+                  className="flex-1 border-gray-700 text-black hover:bg-gray-800"
                 >
                   Edit
                 </Button>

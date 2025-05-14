@@ -95,13 +95,13 @@ export function VideoRoom({ expertId }: VideoRoomProps) {
             className="w-full h-full object-cover"
           />
           <div className="absolute bottom-4 left-4">
-            <span className="px-2 py-1 bg-black/50 text-white rounded text-sm">
+            <span className="px-2 py-1 bg-black/50 text-black rounded text-sm">
               You
             </span>
           </div>
         </div>
         <div className="relative bg-gray-900 rounded-lg overflow-hidden flex items-center justify-center">
-          <div className="text-white text-center">
+          <div className="text-black text-center">
             <p className="mb-2">Waiting for expert to join...</p>
             <p className="text-sm text-gray-400">Expert ID: {expertId}</p>
           </div>

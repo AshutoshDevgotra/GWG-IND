@@ -110,10 +110,10 @@ export default function PricingPage() {
       <div className="bg-primary pt-24 pb-48 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-white mb-4">
+            <h1 className="text-4xl font-bold text-black mb-4">
               Transparent Pricing for Your Growth
             </h1>
-            <p className="text-xl text-white/80 max-w-2xl mx-auto">
+            <p className="text-xl text-black/80 max-w-2xl mx-auto">
               Choose the perfect plan to transform your brand and accelerate your business growth
             </p>
           </div>
@@ -135,7 +135,7 @@ export default function PricingPage() {
             >
               {tier.highlighted && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <span className="bg-primary text-white text-sm font-semibold px-3 py-1 rounded-full">
+                  <span className="bg-primary text-black text-sm font-semibold px-3 py-1 rounded-full">
                     Most Popular
                   </span>
                 </div>
@@ -213,17 +213,17 @@ export default function PricingPage() {
       {/* CTA Section */}
       <div className="bg-primary py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
+          <h2 className="text-3xl font-bold text-black mb-4">
             Ready to Transform Your Brand?
           </h2>
-          <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-black/80 mb-8 max-w-2xl mx-auto">
             Join thousands of businesses that have already elevated their brand with our services
           </p>
           <div className="flex justify-center gap-4">
             <Button variant="secondary" size="lg">
               Contact Sales
             </Button>
-            <Button variant="outline" size="lg" className="bg-transparent text-white hover:bg-white/10">
+            <Button variant="outline" size="lg" className="bg-transparent text-black hover:bg-white/10">
               Schedule Demo
             </Button>
           </div>

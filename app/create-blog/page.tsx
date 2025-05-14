@@ -27,7 +27,7 @@ export default function CreateBlog() {
   };
 
   return (
-    <div className="bg-[#0f0f0f] text-white min-h-screen px-6 py-10">
+    <div className="bg-[#0f0f0f] text-black min-h-screen px-6 py-10">
       <h1 className="text-3xl font-bold mb-6 text-center">Create a New Blog</h1>
       <form onSubmit={handleSubmit} className="bg-[#1a1a1a] p-6 rounded-lg max-w-2xl mx-auto">
         <input
@@ -60,7 +60,7 @@ export default function CreateBlog() {
           onChange={e => setForm({ ...form, image: e.target.value })}
           className="w-full p-3 bg-[#0f0f0f] border border-gray-700 rounded mb-4"
         />
-        <button type="submit" className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded text-white font-semibold">
+        <button type="submit" className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded text-black font-semibold">
           Publish
         </button>
       </form>

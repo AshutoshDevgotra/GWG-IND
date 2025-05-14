@@ -194,7 +194,7 @@ export default function ExpertsPage() {
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-5xl font-bold text-white mb-4 font-display"
+                className="text-5xl font-bold text-black mb-4 font-display"
               >
                 Connect with Industry Experts
               </motion.h1>
@@ -202,13 +202,13 @@ export default function ExpertsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-xl text-white/80 max-w-2xl font-light"
+                className="text-xl text-black/80 max-w-2xl font-light"
               >
                 Get personalized guidance from our experienced professionals
               </motion.p>
             </div>
             <div className="flex items-center gap-4">
-              <div className="text-white">
+              <div className="text-black">
                 <p className="text-sm opacity-80">Wallet Balance</p>
                 <p className="text-xl font-semibold">₹{walletBalance}</p>
               </div>
