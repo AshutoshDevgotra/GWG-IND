@@ -761,7 +761,7 @@ export default function Home() {
           </div>
 
           <div className="text-center mt-12">
-            <a href="growithgarry.in/portfolio" target="_blank" rel="noopener noreferrer">
+            <a href="growwithgarry.in/portfolio" target="_blank" rel="noopener noreferrer">
             <Button
               variant="outline"
               className="border-indigo-500/20 text-black hover:bg-indigo-500/10 text-lg py-6 px-8 rounded-xl transition-all duration-300"
