@@ -112,7 +112,7 @@ export default function Home() {
       {/* Hero Section */}
       <section
         ref={heroRef}
-        className="relative overflow-hidden py-20 md:py-32"
+        className="relative overflow-hidden py-16 md:py-32"
         style={{
           background: "radial-gradient(circle at 50% 50%, rgba(79, 70, 229, 0.15) 0%, transparent 50%)",
         }}
@@ -200,30 +200,39 @@ export default function Home() {
           </div>
 
 {/* 3D Mockup */}
-{/* 3D Mockup */}
 <motion.div
   initial={{ opacity: 0, y: 40 }}
   animate={{ opacity: 1, y: 0 }}
   transition={{ duration: 0.8, delay: 0.3 }}
-  className="mt-16 max-w-5xl mx-auto h-full relative"
+  className="mt-16 max-w-6xl mx-auto relative"
 >
-  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#050714] z-10 h-full bottom-10"></div>
-  <div className="relative">
-    <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl opacity-30 blur-sm"></div>
-    <div className="relative bg-gray-900/80 backdrop-blur-sm p-1 rounded-xl border border-indigo-500/20 overflow-hidden">
+  {/* Gradient overlay at bottom */}
+  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#050714] z-10 h-1/4 bottom-0"></div>
 
-      {/* Wrapping the iframe in a clickable anchor tag */}
-      <a href="https://creatorhub-outx.vercel.app/" target="_blank" rel="noopener noreferrer">
+  <div className="relative">
+    {/* Outer blur glow */}
+    <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl opacity-30 blur-sm"></div>
+
+    {/* Inner container */}
+    <div className="relative bg-gray-900/80 backdrop-blur-sm p-1 rounded-xl border border-indigo-500/20 overflow-hidden">
+      
+      {/* Clickable wrapper */}
+      <a
+        href="https://creatorhub-outx.vercel.app/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block"
+      >
         <iframe
           src="https://creatorhub-outx.vercel.app/"
           title="Website Mockup"
-          width="100%" 
-          height="100%"  
-          className="w-full h-auto rounded-lg" 
+          className="w-full h-[700px] rounded-lg"
           style={{ border: 'none' }}
         />
       </a>
 
+      {/* Optional code effect overlay */}
+      <div className="absolute inset-0 bg-[url('/placeholder.svg?height=600&width=1200')] bg-cover opacity-5 mix-blend-overlay pointer-events-none"></div>
     </div>
   </div>
 </motion.div>
