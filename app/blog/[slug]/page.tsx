@@ -7,19 +7,23 @@ interface Params {
 }
 
 interface Props {
-  params: Params;
+  params: Promise<Params>;
 }
 
-// Mark the component as async to match Next.js expected signature
 export default async function BlogPostPage({ params }: Props) {
-  const post = blogPosts.find((post) => post.slug === params.slug);
+  // Await params because Next.js requires it
+  const { slug } = await params;
 
-  if (!post) return notFound();
+  const post = blogPosts.find((post) => post.slug === slug);
+
+  if (!post) notFound();
 
   return (
-    <main className="max-w-3xl mx-auto px-4 py-10">
-      <h1 className="text-3xl font-bold mb-6">{post.title}</h1>
-      {post.content()}
+    <main className="max-w-3xl mx-auto px-6 py-12 bg-white rounded-lg shadow-md">
+      <h1 className="text-4xl font-extrabold mb-8 text-gray-900">{post.title}</h1>
+      <article className="prose prose-lg max-w-none text-gray-700">
+        {post.content()}
+      </article>
     </main>
   );
 }
