@@ -1202,6 +1202,24 @@ export default function Home() {
             <p>© {new Date().getFullYear()} GrowWithGarry.in. All rights reserved.</p>
           </div>
         </div>
+        {/* Product Hunt Badge */}
+<div className="mt-8 flex justify-center md:justify-start ml-2 left-2 ">
+ <div> <Link
+    href="https://www.producthunt.com/products/creatorhub-by-growwithgarry?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-creatorhub&#0045;by&#0045;growwithgarry"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <Image
+      src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=976125&theme=light&t=1749469730629"
+      alt="CreatorHub by GrowWithGarry - India's fastest way to connect brands & creators | Product Hunt"
+      style={{ width: "250px", height: "54px" }}
+      width="250"
+      height="54"
+    />
+  </Link>
+  </div>
+</div>
+
       </footer>
 
       {/* WhatsApp Floating Button */}

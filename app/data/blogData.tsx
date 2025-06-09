@@ -301,5 +301,127 @@ export const blogPosts = [
     </div>
   ),
 },
+{
+  slug: 'nextjs-vs-shopify-wordpress-india',
+  title: 'Why Custom & Next.js Websites Are Better Than Shopify and WordPress for Indian Brands',
+  description: 'Confused between Shopify, WordPress, and custom websites? Discover why Indian DTC brands are moving to Next.js for speed, SEO, and affordability.',
+  content: () => (
+    <div>
+      <p>
+        Aaj ke time mein har Indian brand chahta hai ek fast, SEO-optimized aur custom branded website. WordPress aur Shopify jaise platforms popular hai,
+        lekin unme kai limitations hain — jaise high monthly cost, slow speed, plugin dependency, aur limited design flexibility.
+      </p>
+
+      <p>
+        Custom websites using <strong>Next.js</strong> give full control, blazing-fast performance, Razorpay integration, and tailor-made UX. Yeh websites easily scale
+        hoti hain, SEO-friendly hoti hain (thanks to SSR), aur ek baar banne ke baad recurring monthly cost nahi hoti – unlike Shopify or WordPress.
+      </p>
+
+      <p>
+        Especially for Indian brands, hum local payment gateways, WhatsApp marketing, Hinglish content, aur mobile-first design easily integrate karte hain.
+        Shopify pe aapko monthly ₹2–4k + app fees + cut dena padta hai. WordPress plugins update aur security ka jhanjhat laata hai.
+      </p>
+
+      <p>
+        <strong>Custom Next.js website</strong> is affordable (₹10k–25k setup), SEO smart, aur full branding control ke saath aata hai. Perfect for creators, DTC startups, 
+        aur businesses jo India ke market ke hisaab se grow karna chahte hain.
+      </p>
+
+      <p>
+        Ready to switch to a better digital presence? Contact us for your custom website setup, hosting, Razorpay, and more — sab kuch under one roof.
+      </p>
+    </div>
+  ),
+}
+,
+{
+  slug: 'best-website-builder-india',
+  title: 'Best Website Builder in India for Brands and eCommerce',
+  description: 'Looking for the best website builder in India? Discover why modern brands choose custom Next.js websites over Shopify and WordPress for performance, control, and affordability.',
+  content: () => (
+    <div>
+      <p>
+        Har Indian brand ya startup ko ek aisi website chahiye jo fast ho, SEO-friendly ho, aur unki branding ko perfectly represent kare — aur wo bhi affordable price par.
+        Lekin traditional platforms jaise WordPress aur Shopify me kai limitations hoti hain — jise modern Indian DTC brands ab avoid kar rahe hain.
+      </p>
+
+      <p>
+        <strong>Best website builder in India?</strong> Our pick: <strong>Custom Website using Next.js</strong>. Yeh ek aisa modern framework hai jo high-speed, mobile-first
+        websites banata hai — perfect for eCommerce, services, and personal branding.
+      </p>
+
+      <h3>🚀 Why Next.js Website is Best for Indian Brands?</h3>
+      <ul>
+        <li>✅ Superfast loading (Google loves speed!)</li>
+        <li>✅ Built-in SEO features with server-side rendering (SSR)</li>
+        <li>✅ Razorpay, Cashfree, and UPI integration ready</li>
+        <li>✅ Full design freedom, koi template limitation nahi</li>
+        <li>✅ Hinglish content ready – for your real Indian audience</li>
+        <li>✅ Lower long-term cost compared to Shopify or WordPress</li>
+      </ul>
+
+      <h3>💸 Affordable for Startups & Small Businesses</h3>
+      <p>Starting from just ₹10,000–₹25,000, a custom-built Next.js website includes:</p>
+      <ul>
+        <li>✅ Home, Product, Cart & Payment Integration</li>
+        <li>✅ SEO Optimization + Blog Section</li>
+        <li>✅ Chatbot & WhatsApp Integration</li>
+        <li>✅ Newsletter & Email Capture</li>
+        <li>✅ Hosting & Domain Setup</li>
+      </ul>
+
+      <h3>🆚 Comparison with Other Website Builders</h3>
+      <p>Here’s how it stacks up:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Shopify</th>
+            <th>WordPress</th>
+            <th>Next.js Custom</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Speed</td>
+            <td>Good</td>
+            <td>Average</td>
+            <td><strong>Excellent</strong></td>
+          </tr>
+          <tr>
+            <td>Monthly Cost</td>
+            <td>High</td>
+            <td>Medium</td>
+            <td><strong>Low (One-time)</strong></td>
+          </tr>
+          <tr>
+            <td>Design Flexibility</td>
+            <td>Low</td>
+            <td>Medium</td>
+            <td><strong>Unlimited</strong></td>
+          </tr>
+          <tr>
+            <td>SEO Control</td>
+            <td>Limited</td>
+            <td>Plugin-based</td>
+            <td><strong>Built-in</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>📢 Final Word</h3>
+      <p>
+        Agar aap chahte hain ek fully custom, branded, fast website with Razorpay + WhatsApp + SEO, Next.js is the best website builder choice in India.
+        Ideal for: <strong>D2C Brands, Local Businesses, Creators, Coaches, and Startups</strong>.
+      </p>
+
+      <p>
+        Contact us today to get your affordable and powerful website built in India — Hosting, domain, chatbot, email marketing — <strong>sab kuch ek hi jagah pe</strong>.
+      </p>
+    </div>
+  ),
+}
+
+
 
 ];
