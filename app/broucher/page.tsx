@@ -1,12 +1,11 @@
 // /pages/broucher.tsx
-export default function BroucherPage() {
-  return (
-    <div style={{ height: "100vh", margin: 0 }}>
-      <iframe
-        src="https://growwithgarry.my.canva.site/"
-        style={{ width: "100%", height: "100%", border: "none" }}
-        allowFullScreen
-      ></iframe>
-    </div>
-  );
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+
+export default function BroucherRedirect() {
+  const router = useRouter();
+  useEffect(() => {
+    window.location.href = "https://growwithgarry.my.canva.site/";
+  }, []);
+  return null;
 }
