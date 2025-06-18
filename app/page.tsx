@@ -5,12 +5,8 @@ import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   ChevronRight,
-  Star,
   Check,
   Phone,
   ArrowRight,
@@ -23,26 +19,35 @@ import {
   Headphones,
   Sparkles,
   Users,
-  Rocket,
   Award,
-  MessageSquare,
+  Youtube,
+  Laptop,
+  Bot,
+  Mail,
 } from "lucide-react"
-import { motion } from "framer-motion"
-import { useMobile } from "@/app//hooks/use-mobile"
-import { TechLogos } from "@/components/tech-logos"
+import { motion, useScroll, useTransform } from "framer-motion"
+import { CircuitBoardPattern } from "@/components/circuit-board-pattern"
+import { FloatingGradient } from "@/components/floating-gradient"
+import { MouseGradientEffect } from "@/components/mouse-gradient-effect"
+import { NewsletterForm } from "@/components/newsletter-form"
+import { ContactForm } from "@/components/contact-form"
+import { ProductCard } from "@/components/product-card"
+import { ServiceCard } from "@/components/service-card"
+
 import { RazorpayCheckout } from "@/components/razorpay-checkout"
 import { CountdownTimer } from "@/components/countdown-timer"
-import { BidForm } from "@/components/bid-form"
-import { InstantCallModal } from "@/components/instant-call-modal"
-import { CircuitBoardPattern } from "@/components/circuit-board-pattern"
+import { TechLogos } from "@/components/tech-logos"
 
 export default function Home() {
-  // const isMobile = useMobile()
   const [scrollY, setScrollY] = useState(0)
   const heroRef = useRef<HTMLDivElement>(null)
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [showCallModal, setShowCallModal] = useState(false)
   const [currentPlan, setCurrentPlan] = useState("basic")
+
+  const { scrollYProgress } = useScroll()
+  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
+  const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -65,12 +70,15 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050714] text-black overflow-hidden">
+    <div className="min-h-screen bg-[#050714] text-white overflow-hidden">
+      {/* Mouse Gradient Effect */}
+      <MouseGradientEffect />
+
       {/* Circuit Board Background Pattern */}
       <CircuitBoardPattern className="fixed inset-0 opacity-5 pointer-events-none" />
 
       {/* Navbar */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-black border-b border-indigo-500/10">
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-black/80 border-b border-white/5">
         <div className="container mx-auto py-4 px-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <div className="h-10 w-10 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 flex items-center justify-center relative overflow-hidden">
@@ -80,26 +88,29 @@ export default function Home() {
             <span className="font-bold text-xl">GrowWithGarry.in</span>
           </div>
           <nav className="hidden md:flex items-center gap-8">
-            <Link href="#features" className="text-gray-300 hover:text-black transition-colors">
-              Features
+            <Link href="#services" className="text-gray-300 hover:text-white transition-colors">
+              Services
             </Link>
-            <Link href="#portfolio" className="text-gray-300 hover:text-black transition-colors">
-              portfolio
+            <Link href="#portfolio" className="text-gray-300 hover:text-white transition-colors">
+              Portfolio
             </Link>
-            <Link href="#pricing" className="text-gray-300 hover:text-black transition-colors">
+            <Link href="#pricing" className="text-gray-300 hover:text-white transition-colors">
               Pricing
             </Link>
-            <Link href="#contact" className="text-gray-300 hover:text-black transition-colors">
+            <Link href="/careers" className="text-gray-300 hover:text-white transition-colors">
+              Careers
+            </Link>
+            <Link href="#contact" className="text-gray-300 hover:text-white transition-colors">
               Contact
             </Link>
           </nav>
           <div className="flex items-center gap-3">
             <Button
               variant="outline"
-              className="border-indigo-500/20 text-black hover:bg-indigo-500/10 transition-all duration-300 hidden md:flex"
+              className="border-white/10 text-white hover:bg-white/5 transition-all duration-300 hidden md:flex"
               onClick={handleInstantCallClick}
             >
-              <Phone className="h-4 w-4 mr-2 text-black" />
+              <Phone className="h-4 w-4 mr-2 text-white" />
               Instant Call
             </Button>
             <Button className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 hover:shadow-lg hover:shadow-indigo-500/20 transition-all duration-300 border border-indigo-500/20">
@@ -110,16 +121,9 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section
-        ref={heroRef}
-        className="relative overflow-hidden py-16 md:py-32"
-        style={{
-          background: "radial-gradient(circle at 50% 50%, rgba(79, 70, 229, 0.15) 0%, transparent 50%)",
-        }}
-      />
-        {/* Floating Elements */}
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-indigo-600/10 rounded-full filter blur-3xl animate-float"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-purple-600/10 rounded-full filter blur-3xl animate-float delay-700"></div>
+      <section ref={heroRef} className="relative overflow-hidden py-24 md:py-32">
+        {/* Floating Gradient Elements */}
+        <FloatingGradient />
 
         {/* Tech Elements */}
         <div
@@ -154,16 +158,17 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="max-w-4xl mx-auto text-center"
+            style={{ opacity, scale }}
           >
             <div className="inline-block mb-4 px-4 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300">
               <span className="mr-2">🚀</span> Next-Gen Web Development
             </div>
             <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400 leading-tight">
-              Launch Beautiful, Powerful Landing Pages – Starting at ₹5000
+              Elevate Your Brand with Custom Digital Experiences
             </h1>
             <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
-              Get a fast, secure, and scalable landing page with email & database integration, built using the latest
-              technologies.
+              We build stunning websites, e-commerce platforms, and SaaS solutions for Indian brands, content creators,
+              and businesses.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
@@ -175,7 +180,7 @@ export default function Home() {
               </Button>
               <Button
                 variant="outline"
-                className="border-indigo-500/20 text-black hover:bg-indigo-500/10 text-lg py-6 px-8 rounded-xl transition-all duration-300"
+                className="border-white/10 text-white hover:bg-white/5 text-lg py-6 px-8 rounded-xl transition-all duration-300"
                 onClick={handleInstantCallClick}
               >
                 <Headphones className="mr-2 h-5 w-5" />
@@ -197,49 +202,42 @@ export default function Home() {
               </div>
             </div>
           </motion.div>
-          </div>
+        </div>
+      </section>
 
-{/* 3D Mockup */}
-<motion.div
-  initial={{ opacity: 0, y: 40 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.8, delay: 0.3 }}
-  className="mt-16 max-w-6xl mx-auto relative"
->
-  {/* Gradient overlay at bottom */}
-  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#050714] z-10 h-1/4 bottom-0"></div>
-
-  <div className="relative">
-    {/* Outer blur glow */}
-    <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl opacity-30 blur-sm"></div>
-
-    {/* Inner container */}
-    <div className="relative bg-gray-900/80 backdrop-blur-sm p-1 rounded-xl border border-indigo-500/20 overflow-hidden">
-      
-      {/* Clickable wrapper */}
-      <a
-        href="https://creatorhub-outx.vercel.app/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block"
+      {/* 3D Mockup */}
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.3 }}
+        className="mt-16 max-w-6xl mx-auto relative px-4"
       >
-        <iframe
-          src="https://creatorhub-outx.vercel.app/"
-          title="Website Mockup"
-          className="w-full h-[700px] rounded-lg"
-          style={{ border: 'none' }}
-        />
-      </a>
+        {/* Gradient overlay at bottom */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#050714] z-10 h-1/4 bottom-0"></div>
 
-      {/* Optional code effect overlay */}
-      <div className="absolute inset-0 bg-[url('/placeholder.svg?height=600&width=1200')] bg-cover opacity-5 mix-blend-overlay pointer-events-none"></div>
-    </div>
-  </div>
-</motion.div>
+        <div className="relative">
+          {/* Outer blur glow */}
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl opacity-30 blur-sm"></div>
 
+          {/* Inner container */}
+          <div className="relative bg-gray-900/80 backdrop-blur-sm p-1 rounded-xl border border-indigo-500/20 overflow-hidden">
+            {/* Clickable wrapper */}
+            <a href="https://creatorhub-outx.vercel.app/" target="_blank" rel="noopener noreferrer" className="block">
+              <iframe
+                src="https://creatorhub-outx.vercel.app/"
+                title="Website Mockup"
+                className="w-full h-[700px] rounded-lg"
+                style={{ border: "none" }}
+              />
+            </a>
 
+            {/* Optional code effect overlay */}
+            <div className="absolute inset-0 bg-[url('/placeholder.svg?height=600&width=1200')] bg-cover opacity-5 mix-blend-overlay pointer-events-none"></div>
+          </div>
+        </div>
+      </motion.div>
 
-      {/* Instant Booking Section - NEW */}
+      {/* Special Offer for Content Creators - NEW */}
       <section className="py-20 relative overflow-hidden">
         <div className="container mx-auto px-4">
           <motion.div
@@ -247,45 +245,43 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="max-w-5xl mx-auto bg-gradient-to-br from-indigo-900/20 to-purple-900/20 rounded-2xl p-8 backdrop-blur-sm border border-indigo-500/20 relative overflow-hidden"
+            className="max-w-5xl mx-auto bg-gradient-to-br from-purple-900/20 to-pink-900/20 rounded-2xl p-8 backdrop-blur-sm border border-purple-500/20 relative overflow-hidden"
           >
             <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
             <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
               <div className="flex-1">
-                <div className="inline-block mb-4 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400">
-                  <Clock className="h-4 w-4 inline mr-1" /> Limited Time Offer
+                <div className="inline-block mb-4 px-3 py-1 rounded-full bg-pink-500/10 border border-pink-500/20 text-pink-400">
+                  <Youtube className="h-4 w-4 inline mr-1" /> Content Creator Special
                 </div>
-                <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                  Book Your Project Now, Get a Call Within 30 Minutes
-                </h2>
+                <h2 className="text-2xl md:text-3xl font-bold mb-4">20% OFF Portfolio Websites for Content Creators</h2>
                 <p className="text-gray-300 mb-6">
-                  Pay just ₹500 to reserve your spot in our development queue and get an instant consultation call
-                  within 30 minutes, even on weekends!
+                  Are you a YouTuber, Instagram influencer, or content creator? Get a stunning portfolio website
+                  starting at just ₹1100 with our special creator discount!
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button
-                    className="bg-green-600 hover:bg-green-700 transition-all duration-300 border border-green-500/20"
-                    onClick={() => handlePaymentClick("instant")}
+                    className="bg-gradient-to-r from-pink-600 to-purple-600 hover:bg-pink-700 transition-all duration-300 border border-pink-500/20"
+                    onClick={() => handlePaymentClick("creator")}
                   >
-                    Book for ₹500 Now
+                    Claim Your 20% Discount
                   </Button>
                   <div className="flex items-center text-gray-400 text-sm">
                     <CountdownTimer minutes={30} seconds={0} />
-                    <span className="ml-2">until next slot</span>
+                    <span className="ml-2">until offer expires</span>
                   </div>
                 </div>
               </div>
               <div className="flex-1 flex justify-center">
                 <div className="relative">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-full blur"></div>
-                  <div className="relative bg-gray-900/80 backdrop-blur-sm p-6 rounded-xl border border-green-500/20 text-center">
-                    <Headphones className="h-16 w-16 mx-auto mb-4 text-green-400" />
-                    <div className="text-xl font-bold mb-2">Instant Consultation</div>
-                    <div className="text-gray-400 mb-4">Our expert will call you within 30 minutes</div>
+                  <div className="absolute -inset-1 bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-full blur"></div>
+                  <div className="relative bg-gray-900/80 backdrop-blur-sm p-6 rounded-xl border border-pink-500/20 text-center">
+                    <Youtube className="h-16 w-16 mx-auto mb-4 text-pink-400" />
+                    <div className="text-xl font-bold mb-2">Portfolio Website</div>
+                    <div className="text-gray-400 mb-4">Starting at just ₹1100</div>
                     <div className="flex justify-center">
                       <div className="flex items-center gap-1 text-sm">
-                        <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></div>
-                        <span className="text-green-400">12 slots available today</span>
+                        <div className="h-2 w-2 rounded-full bg-pink-500 animate-pulse"></div>
+                        <span className="text-pink-400">Limited time offer</span>
                       </div>
                     </div>
                   </div>
@@ -293,6 +289,114 @@ export default function Home() {
               </div>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Our Products Section - NEW */}
+      <section id="products" className="py-20 relative overflow-hidden">
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 inline-block">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400">
+                Our Innovative Products
+              </span>
+            </h2>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              Discover our suite of digital products designed to solve real problems
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <ProductCard
+              title="CreatorHub"
+              description="A platform connecting Indian brands with content creators for authentic marketing collaborations."
+              icon={<Users className="h-8 w-8 text-indigo-400" />}
+              link="https://creatorhub-outx.vercel.app/"
+              badge="Featured on Product Hunt"
+              color="indigo"
+            />
+
+            <ProductCard
+              title="NyaySetu"
+              description="Making legal services accessible to all Indians through technology and simplified processes."
+              icon={<Shield className="h-8 w-8 text-blue-400" />}
+              link="#"
+              badge="Coming Soon"
+              color="blue"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section - NEW */}
+      <section id="services" className="py-20 relative overflow-hidden">
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 inline-block">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-indigo-400">
+                Our Services
+              </span>
+            </h2>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              Comprehensive digital solutions tailored for Indian businesses and creators
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <ServiceCard
+              title="Custom E-commerce"
+              description="Build your brand's custom e-commerce platform with personalized storytelling and seamless shopping experiences."
+              icon={<Laptop className="h-8 w-8 text-blue-400" />}
+              color="blue"
+            />
+
+            <ServiceCard
+              title="Creator Portfolios"
+              description="Showcase your content and attract brand deals with a professional portfolio website designed for YouTubers and influencers."
+              icon={<Youtube className="h-8 w-8 text-red-400" />}
+              color="red"
+            />
+
+            <ServiceCard
+              title="SaaS Development"
+              description="Transform your business idea into a scalable SaaS product with our end-to-end development services."
+              icon={<Code className="h-8 w-8 text-green-400" />}
+              color="green"
+            />
+
+            <ServiceCard
+              title="AI Chatbots"
+              description="Implement intelligent chatbots trained on your business data to enhance customer service and engagement."
+              icon={<Bot className="h-8 w-8 text-purple-400" />}
+              color="purple"
+            />
+
+            <ServiceCard
+              title="Email Marketing"
+              description="Design and implement effective email campaigns that convert leads into loyal customers."
+              icon={<Mail className="h-8 w-8 text-yellow-400" />}
+              color="yellow"
+            />
+
+            <ServiceCard
+              title="UX/UI Design"
+              description="Create intuitive, beautiful interfaces that delight users and drive business results."
+              icon={<Sparkles className="h-8 w-8 text-pink-400" />}
+              color="pink"
+            />
+          </div>
         </div>
       </section>
 
@@ -408,11 +512,11 @@ export default function Home() {
               },
               {
                 title: "Email List Storage",
-                description: "Integrate with Mailchimp, Firebase, or custom database for lead collection.",
+                description: "Integrate with Firestore, Mailchimp, or custom database for lead collection.",
               },
               {
                 title: "Database Integration",
-                description: "Connect to Firebase, AWS, or other database solutions for data management.",
+                description: "Connect to Firestore, Firebase, AWS, or other database solutions for data management.",
               },
               {
                 title: "Razorpay Payment Button",
@@ -499,7 +603,7 @@ export default function Home() {
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="h-5 w-5 text-green-500 mt-0.5" />
-                    <span>Contact form</span>
+                    <span>Contact form with Firestore</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="h-5 w-5 text-green-500 mt-0.5" />
@@ -530,7 +634,7 @@ export default function Home() {
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/30 to-blue-500/30 rounded-xl blur opacity-80"></div>
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-xl blur-xl opacity-80"></div>
               <div className="relative bg-gray-900/80 p-8 rounded-xl backdrop-blur-sm border border-purple-500/30 h-full flex flex-col">
-                <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-600 to-blue-600 text-black text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">
+                <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">
                   POPULAR
                 </div>
                 <h3 className="text-xl font-bold mb-2">Premium Website</h3>
@@ -608,7 +712,7 @@ export default function Home() {
                 </ul>
                 <Button
                   variant="outline"
-                  className="border-blue-500/20 text-black hover:bg-blue-500/10 transition-all duration-300 w-full"
+                  className="border-blue-500/20 text-white hover:bg-blue-500/10 transition-all duration-300 w-full"
                   onClick={handleInstantCallClick}
                 >
                   Get Custom Quote
@@ -619,57 +723,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Custom Bidding Section - NEW */}
-      <section className="py-20 relative overflow-hidden">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="max-w-5xl mx-auto"
-          >
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
-                  Name Your Price
-                </span>
-              </h2>
-              <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-                Have a specific budget? Submit your project details and proposed price - we might accept your offer!
-              </p>
-            </div>
-
-            <div className="relative">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-xl blur"></div>
-              <div className="relative bg-gray-900/80 p-8 rounded-xl backdrop-blur-sm border border-blue-500/20">
-                <Tabs defaultValue="website" className="w-full">
-                  <TabsList className="grid grid-cols-3 mb-8">
-                    <TabsTrigger value="website">Website</TabsTrigger>
-                    <TabsTrigger value="ecommerce">E-commerce</TabsTrigger>
-                    <TabsTrigger value="webapp">Web App</TabsTrigger>
-                  </TabsList>
-
-                  <TabsContent value="website" className="mt-0">
-                    <BidForm projectType="website" />
-                  </TabsContent>
-
-                  <TabsContent value="ecommerce" className="mt-0">
-                    <BidForm projectType="ecommerce" />
-                  </TabsContent>
-
-                  <TabsContent value="webapp" className="mt-0">
-                    <BidForm projectType="webapp" />
-                  </TabsContent>
-                </Tabs>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/*OUR PORTFOLIO Section */}
-      <section id="text-black" className="py-20 relative overflow-hidden">
+      {/* Portfolio Section */}
+      <section id="portfolio" className="py-20 relative overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -703,8 +758,8 @@ export default function Home() {
                 description: "Brand website for a creative agency showcasing their portfolio and services.",
               },
               {
-                title: "DesignMaster portfolio",
-                tag: "text-black",
+                title: "DesignMaster Portfolio",
+                tag: "Portfolio",
                 image: "/placeholder.svg?height=300&width=400",
                 description: "Personal portfolio for a UI/UX designer with interactive project showcases.",
               },
@@ -749,7 +804,7 @@ export default function Home() {
 
                     {/* Hover overlay */}
                     <div className="absolute inset-0 bg-indigo-600/20 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-6">
-                      <p className="text-black mb-4 text-center">{project.description}</p>
+                      <p className="text-white mb-4 text-center">{project.description}</p>
                       <Button className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all duration-300">
                         View Project
                       </Button>
@@ -761,179 +816,46 @@ export default function Home() {
           </div>
 
           <div className="text-center mt-12">
-            <a href="growwithgarry.in/portfolio" target="_blank" rel="noopener noreferrer">
-            <Button
-              variant="outline"
-              className="border-indigo-500/20 text-black hover:bg-indigo-500/10 text-lg py-6 px-8 rounded-xl transition-all duration-300"
-            >
-              View Full Portfolio
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Process Section - NEW */}
-      <section className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/5 to-purple-900/5"></div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Simple Process</h2>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">From concept to launch in just a few simple steps</p>
-          </motion.div>
-
-          <div className="max-w-5xl mx-auto">
-            <div className="grid md:grid-cols-4 gap-8">
-              {[
-                {
-                  icon: <MessageSquare className="h-8 w-8 text-indigo-400" />,
-                  title: "1. Consultation",
-                  description: "We discuss your requirements and goals to understand your vision.",
-                },
-                {
-                  icon: <Sparkles className="h-8 w-8 text-purple-400" />,
-                  title: "2. Design",
-                  description: "Our designers create mockups for your approval before development.",
-                },
-                {
-                  icon: <Code className="h-8 w-8 text-blue-400" />,
-                  title: "3. Development",
-                  description: "We build your site using the latest technologies and best practices.",
-                },
-                {
-                  icon: <Rocket className="h-8 w-8 text-green-400" />,
-                  title: "4. Launch",
-                  description: "Your site goes live with our support to ensure everything runs smoothly.",
-                },
-              ].map((step, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="relative"
-                >
-                  {index < 3 && (
-                    <div className="absolute top-10 left-1/2 w-full h-0.5 bg-gradient-to-r from-indigo-500/50 to-purple-500/50 hidden md:block"></div>
-                  )}
-                  <div className="bg-gradient-to-br from-gray-900 to-gray-950 border-0 p-6 rounded-xl hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 hover:-translate-y-1 backdrop-blur-sm relative overflow-hidden group h-full">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 blur opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
-                    <div className="relative z-10 flex flex-col items-center text-center">
-                      <div className="bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-full p-4 mb-4">
-                        {step.icon}
-                      </div>
-                      <h3 className="text-xl font-bold mb-2">{step.title}</h3>
-                      <p className="text-gray-400">{step.description}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Reviews Section */}
-      <section className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/5 to-purple-900/5"></div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">What Our Clients Say</h2>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Hear from businesses who&apos;ve transformed their online presence with us
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {[
-              {
-                name: "Rohit Sharma",
-                company: "TechGuru Electronics",
-                location: "Delhi",
-                image: "/placeholder.svg?height=100&width=100",
-                review:
-                  "GrowWithGarry delivered our e-commerce site ahead of schedule. The design is beautiful and conversion rates have improved by 35% in the first month.",
-              },
-              {
-                name: "Aditi Rao",
-                company: "CreativeMinds Agency",
-                location: "Mumbai",
-                image: "/placeholder.svg?height=100&width=100",
-                review:
-                  "Working with Garry's team was a pleasure. They understood our requirements perfectly and delivered a stunning website that has helped us win more clients.",
-              },
-              {
-                name: "Karan Malhotra",
-                company: "CloudSync",
-                location: "Bangalore",
-                image: "/placeholder.svg?height=100&width=100",
-                review:
-                  "The landing page they built for our SaaS product helped us increase sign-ups by 40%. Their AI-enhanced development approach saved us weeks of time.",
-              },
-            ].map((review, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
+            <Link href="/portfolio">
+              <Button
+                variant="outline"
+                className="border-indigo-500/20 text-white hover:bg-indigo-500/10 text-lg py-6 px-8 rounded-xl transition-all duration-300"
               >
-                <Card className="bg-gradient-to-br from-gray-900 to-gray-950 border-0 p-8 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 backdrop-blur-sm relative overflow-hidden group h-full">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 blur opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
-                  <div className="relative z-10 flex flex-col items-center text-center">
-                    <div className="relative mb-4">
-                      <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full blur-sm"></div>
-                      <Image
-                        src={review.image || "/placeholder.svg"}
-                        alt={review.name}
-                        width={80}
-                        height={80}
-                        className="rounded-full relative z-10 border-2 border-indigo-500"
-                      />
-                    </div>
-                    <div className="flex mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="h-5 w-5 fill-yellow-500 text-yellow-500" />
-                      ))}
-                    </div>
-                    <p className="text-gray-300 mb-4">&quot;{review.review}&quot;</p>
-                    <div>
-                      <h4 className="font-semibold">{review.name}</h4>
-                      <p className="text-indigo-400 text-sm">{review.company}</p>
-                      <p className="text-gray-400 text-sm">{review.location}</p>
-                    </div>
-                  </div>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-
-          <div className="mt-12 text-center">
-            <div className="inline-flex items-center gap-2 text-gray-400">
-              <Award className="h-5 w-5 text-yellow-500" />
-              <span>Rated 4.9/5 based on 200+ client reviews</span>
-            </div>
+                View Full Portfolio
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Quote Form Section */}
+      {/* Newsletter Section - NEW */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="max-w-5xl mx-auto bg-gradient-to-br from-indigo-900/20 to-purple-900/20 rounded-2xl p-8 backdrop-blur-sm border border-indigo-500/20 relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+            <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+              <div className="flex-1">
+                <h2 className="text-2xl md:text-3xl font-bold mb-4">Subscribe to Our Newsletter</h2>
+                <p className="text-gray-300 mb-6">
+                  Get the latest web development tips, trends, and special offers delivered directly to your inbox.
+                </p>
+              </div>
+              <div className="flex-1">
+                <NewsletterForm />
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Contact Form Section */}
       <section id="contact" className="py-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-indigo-900/10 to-purple-900/10"></div>
 
@@ -952,85 +874,7 @@ export default function Home() {
                 <p className="text-gray-400 text-center mb-8">
                   Tell us about your project and we&apos;ll get back to you within 24 hours
                 </p>
-                <form className="space-y-6">
-                  <div className="grid sm:grid-cols-2 gap-6">
-                    <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">
-                        Name
-                      </label>
-                      <Input
-                        id="name"
-                        placeholder="Your name"
-                        className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-black"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
-                        Email
-                      </label>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="Your email"
-                        className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-black"
-                      />
-                    </div>
-                  </div>
-                  <div className="grid sm:grid-cols-2 gap-6">
-                    <div>
-                      <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-1">
-                        Phone
-                      </label>
-                      <Input
-                        id="phone"
-                        placeholder="Your phone number"
-                        className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-black"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="website-type" className="block text-sm font-medium text-gray-300 mb-1">
-                        Type of Website
-                      </label>
-                      <select
-                        id="website-type"
-                        className="w-full rounded-md bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-black py-2 px-3"
-                      >
-                        <option>Landing Page</option>
-                        <option>E-Commerce</option>
-                        <option>text-black</option>
-                        <option>SaaS</option>
-                        <option>Other</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div>
-                    <label htmlFor="budget" className="block text-sm font-medium text-gray-300 mb-1">
-                      Budget
-                    </label>
-                    <select
-                      id="budget"
-                      className="w-full rounded-md bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-black py-2 px-3"
-                    >
-                      <option>₹5,000 - ₹10,000</option>
-                      <option>₹10,000 - ₹25,000</option>
-                      <option>₹25,000 - ₹50,000</option>
-                      <option>₹50,000+</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-1">
-                      Message
-                    </label>
-                    <Textarea
-                      id="message"
-                      placeholder="Tell us about your project"
-                      className="bg-gray-800/50 border-gray-700 focus:border-indigo-500 text-black min-h-[120px]"
-                    />
-                  </div>
-                  <Button className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 w-full py-6 text-lg rounded-xl border border-indigo-500/20">
-                    Request Quote
-                  </Button>
-                </form>
+                <ContactForm />
               </div>
             </div>
           </motion.div>
@@ -1068,7 +912,7 @@ export default function Home() {
               </Button>
               <Button
                 variant="outline"
-                className="border-indigo-500/20 text-black hover:bg-indigo-500/10 text-lg py-6 px-8 rounded-xl transition-all duration-300 flex items-center gap-2"
+                className="border-indigo-500/20 text-white hover:bg-indigo-500/10 text-lg py-6 px-8 rounded-xl transition-all duration-300 flex items-center gap-2"
                 onClick={handleInstantCallClick}
               >
                 <Phone className="h-5 w-5" />
@@ -1079,7 +923,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Trust Badges Section - NEW */}
+      {/* Trust Badges Section */}
       <section className="py-10 relative overflow-hidden">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
@@ -1124,7 +968,7 @@ export default function Home() {
                 <span className="font-bold text-xl">GrowWithGarry.in</span>
               </div>
               <p className="text-gray-400 mb-6">
-                Professional landing pages and web development services at affordable prices.
+                Professional web development services for Indian brands, content creators, and businesses.
               </p>
               <div className="flex gap-4">
                 {["twitter", "facebook", "instagram", "linkedin"].map((social) => (
@@ -1143,24 +987,24 @@ export default function Home() {
               <h3 className="font-bold text-lg mb-6">Services</h3>
               <ul className="space-y-4">
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-black transition-colors">
+                  <Link href="#services" className="text-gray-400 hover:text-white transition-colors">
                     Landing Pages
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-black transition-colors">
+                  <Link href="#services" className="text-gray-400 hover:text-white transition-colors">
                     E-Commerce
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-black transition-colors">
+                  <Link href="#services" className="text-gray-400 hover:text-white transition-colors">
                     SaaS Development
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-black transition-colors">
-                    Custom Solutions
-                  </a>
+                  <Link href="#services" className="text-gray-400 hover:text-white transition-colors">
+                    AI Chatbots
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -1168,24 +1012,24 @@ export default function Home() {
               <h3 className="font-bold text-lg mb-6">Company</h3>
               <ul className="space-y-4">
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-black transition-colors">
+                  <Link href="/about" className="text-gray-400 hover:text-white transition-colors">
                     About Us
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-black transition-colors">
-                    text-black
-                  </a>
+                  <Link href="/portfolio" className="text-gray-400 hover:text-white transition-colors">
+                    Portfolio
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-black transition-colors">
-                    Testimonials
-                  </a>
+                  <Link href="/careers" className="text-gray-400 hover:text-white transition-colors">
+                    Careers
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-black transition-colors">
-                    Contact
-                  </a>
+                  <Link href="/interns" className="text-gray-400 hover:text-white transition-colors">
+                    Our Interns
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -1203,23 +1047,23 @@ export default function Home() {
           </div>
         </div>
         {/* Product Hunt Badge */}
-<div className="mt-8 flex justify-center md:justify-start ml-2 left-2 ">
- <div> <Link
-    href="https://www.producthunt.com/products/creatorhub-by-growwithgarry?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-creatorhub&#0045;by&#0045;growwithgarry"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    <Image
-      src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=976125&theme=light&t=1749469730629"
-      alt="CreatorHub by GrowWithGarry - India's fastest way to connect brands & creators | Product Hunt"
-      style={{ width: "250px", height: "54px" }}
-      width="250"
-      height="54"
-    />
-  </Link>
-  </div>
-</div>
-
+        <div className="mt-8 flex justify-center md:justify-start ml-2 left-2 ">
+          <div>
+            <Link
+              href="https://www.producthunt.com/products/creatorhub-by-growwithgarry?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-creatorhub&#0045;by&#0045;growwithgarry"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=976125&theme=light&t=1749469730629"
+                alt="CreatorHub by GrowWithGarry - India's fastest way to connect brands & creators | Product Hunt"
+                style={{ width: "250px", height: "54px" }}
+                width="250"
+                height="54"
+              />
+            </Link>
+          </div>
+        </div>
       </footer>
 
       {/* WhatsApp Floating Button */}
@@ -1248,8 +1092,7 @@ export default function Home() {
       {/* Razorpay Payment Modal */}
       {showPaymentModal && <RazorpayCheckout plan={currentPlan} onClose={() => setShowPaymentModal(false)} />}
 
-      {/* Instant Call Modal */}
-      {showCallModal && <InstantCallModal onClose={() => setShowCallModal(false)} />}
+    
     </div>
   )
 }

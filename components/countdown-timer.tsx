@@ -8,34 +8,30 @@ interface CountdownTimerProps {
 }
 
 export function CountdownTimer({ minutes, seconds }: CountdownTimerProps) {
-  const [timeLeft, setTimeLeft] = useState({
-    minutes,
-    seconds,
-  })
+  const [timeLeft, setTimeLeft] = useState(minutes * 60 + seconds)
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime.seconds > 0) {
-          return { ...prevTime, seconds: prevTime.seconds - 1 }
-        } else if (prevTime.minutes > 0) {
-          return { minutes: prevTime.minutes - 1, seconds: 59 }
-        } else {
-          clearInterval(timer)
-          return prevTime
-        }
-      })
+    if (timeLeft <= 0) return
+
+    const intervalId = setInterval(() => {
+      setTimeLeft(timeLeft - 1)
     }, 1000)
 
-    return () => clearInterval(timer)
-  }, [])
+    return () => clearInterval(intervalId)
+  }, [timeLeft])
+
+  const displayMinutes = Math.floor(timeLeft / 60)
+  const displaySeconds = timeLeft % 60
 
   return (
-    <div className="flex items-center gap-1 bg-gray-800/50 px-3 py-1 rounded-full border border-indigo-500/20">
-      <div className="h-2 w-2 rounded-full bg-indigo-500 animate-pulse"></div>
-      <span>
-        {String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
-      </span>
+    <div className="flex items-center gap-1 font-mono text-sm">
+      <div className="bg-red-500/20 px-2 py-1 rounded border border-red-500/30">
+        {displayMinutes.toString().padStart(2, "0")}
+      </div>
+      <span className="text-red-400">:</span>
+      <div className="bg-red-500/20 px-2 py-1 rounded border border-red-500/30">
+        {displaySeconds.toString().padStart(2, "0")}
+      </div>
     </div>
   )
 }
