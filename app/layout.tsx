@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="facebook-domain-verification" content="jvmxewrxcmz4z577s2uv19cwdm31zl" />
-        <link rel="icon" href="public/favicon.ico" />
+        <link rel="icon" href="/images/favicon.ico" />
         <title>Grow With Garry</title>
       </head>
 
