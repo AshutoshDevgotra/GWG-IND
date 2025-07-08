@@ -1,4 +1,10 @@
 "use client"
+import { Instagram, Linkedin, Twitter, TwitterIcon } from "lucide-react";
+import { InstagramIcon } from "lucide-react";
+import { LinkedinIcon } from "lucide-react";
+import { YoutubeIcon } from "lucide-react";
+
+
 
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
@@ -77,7 +83,7 @@ export default function Home() {
       {/* Circuit Board Background Pattern */}
       <CircuitBoardPattern className="fixed inset-0 opacity-5 pointer-events-none" />
 
-      {/* Navbar */}
+      {/* Navbar
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-black/80 border-b border-white/5">
         <div className="container mx-auto py-4 px-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
@@ -118,7 +124,7 @@ export default function Home() {
             </Button>
           </div>
         </div>
-      </header>
+      </header> */}
 
       {/* Hero Section */}
       <section ref={heroRef} className="relative overflow-hidden py-24 md:py-32">
@@ -180,7 +186,7 @@ export default function Home() {
               </Button>
               <Button
                 variant="outline"
-                className="border-white/10 text-white hover:bg-white/5 text-lg py-6 px-8 rounded-xl transition-all duration-300"
+                className="border-white/10  hover:bg-white/5 text-lg py-6 px-8 rounded-xl transition-all duration-300"
                 onClick={handleInstantCallClick}
               >
                 <Headphones className="mr-2 h-5 w-5" />
@@ -712,7 +718,7 @@ export default function Home() {
                 </ul>
                 <Button
                   variant="outline"
-                  className="border-blue-500/20 text-white hover:bg-blue-500/10 transition-all duration-300 w-full"
+                  className="border-blue-500/20 text-white bg-blue-500/10 transition-all duration-300 w-full"
                   onClick={handleInstantCallClick}
                 >
                   Get Custom Quote
@@ -819,7 +825,7 @@ export default function Home() {
             <Link href="/portfolio">
               <Button
                 variant="outline"
-                className="border-indigo-500/20 text-white hover:bg-indigo-500/10 text-lg py-6 px-8 rounded-xl transition-all duration-300"
+                className="border-indigo-500/20 text-white bg-indigo-500/10 text-lg py-6 px-8 rounded-xl transition-all duration-300"
               >
                 View Full Portfolio
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -912,7 +918,7 @@ export default function Home() {
               </Button>
               <Button
                 variant="outline"
-                className="border-indigo-500/20 text-white hover:bg-indigo-500/10 text-lg py-6 px-8 rounded-xl transition-all duration-300 flex items-center gap-2"
+                className="border-indigo-500/20 text-white bg-indigo-500/10 text-lg py-6 px-8 rounded-xl transition-all duration-300 flex items-center gap-2"
                 onClick={handleInstantCallClick}
               >
                 <Phone className="h-5 w-5" />
@@ -963,25 +969,54 @@ export default function Home() {
               <div className="flex items-center gap-2 mb-6">
                 <div className="h-10 w-10 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 flex items-center justify-center relative overflow-hidden">
                   <div className="absolute inset-0 bg-grid-pattern opacity-30"></div>
-                  <span className="font-bold text-xl relative z-10">G</span>
+                  <Image src="/logo.png" alt="GwG Logo" width={40} height={40} className='rounded-full' />
                 </div>
                 <span className="font-bold text-xl">GrowWithGarry.in</span>
               </div>
               <p className="text-gray-400 mb-6">
                 Professional web development services for Indian brands, content creators, and businesses.
               </p>
-              <div className="flex gap-4">
-                {["twitter", "facebook", "instagram", "linkedin"].map((social) => (
-                  <a
-                    key={social}
-                    href="#"
-                    className="h-10 w-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors"
-                  >
-                    <span className="sr-only">{social}</span>
-                    <div className="h-5 w-5"></div>
-                  </a>
-                ))}
-              </div>
+             <div className="flex gap-4">
+  <a
+    href="https://twitter.com/ashutosh1979853"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="h-10 w-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-500 transition-colors"
+  >
+    <span className="sr-only">Twitter</span>
+    <Twitter className="h-5 w-5 text-white" />
+  </a>
+
+  <a
+    href="https://instagram.com/growwithgarry"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="h-10 w-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-pink-500 transition-colors"
+  >
+    <span className="sr-only">Instagram</span>
+    <Instagram className="h-5 w-5 text-white" />
+  </a>
+
+  <a
+    href="https://www.linkedin.com/in/ashutosh-devgotra-284057269/"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="h-10 w-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-700 transition-colors"
+  >
+    <span className="sr-only">LinkedIn</span>
+    <Linkedin className="h-5 w-5 text-white" />
+  </a>
+
+  <a
+    href="https://youtube.com/@growwithgarry"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="h-10 w-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-red-600 transition-colors"
+  >
+    <span className="sr-only">YouTube</span>
+    <Youtube className="h-5 w-5 text-white" />
+  </a>
+</div>
             </div>
             <div>
               <h3 className="font-bold text-lg mb-6">Services</h3>
@@ -1036,9 +1071,9 @@ export default function Home() {
             <div>
               <h3 className="font-bold text-lg mb-6">Contact</h3>
               <ul className="space-y-4">
-                <li className="text-gray-400">contact@growwithgarry.in</li>
-                <li className="text-gray-400">+91 98765 43210</li>
-                <li className="text-gray-400">Bangalore, India</li>
+                <li className="text-gray-400">connect@growwithgarry.in</li>
+                <li className="text-gray-400">+91 9877292856</li>
+                <li className="text-gray-400">Jalandhar,India</li>
               </ul>
             </div>
           </div>

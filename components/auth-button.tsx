@@ -155,7 +155,7 @@ export function AuthButton() {
       ) : (
         <Dialog open={isAuthDialogOpen} onOpenChange={setIsAuthDialogOpen}>
           <DialogTrigger asChild>
-            <Button variant="outline" className="text-black  bg-grey/10 hover:text-black hover:bg-white">
+            <Button variant="outline" className="text-white  bg-grey/10">
               <LogIn className="w-4 h-4 mr-2" />
               Sign In
             </Button>

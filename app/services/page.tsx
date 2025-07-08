@@ -250,7 +250,7 @@ export default function ServicesPage() {
             <h1 className="text-4xl font-bold text-black mb-4">
               Our Services
             </h1>
-            <p className="text-xl text-black/80 max-w-2xl mx-auto">
+            <p className="text-xl text-white max-w-2xl mx-auto">
               Comprehensive solutions to elevate your business and brand presence
             </p>
           </div>

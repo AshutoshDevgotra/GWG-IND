@@ -97,7 +97,7 @@ export function ProductCard({ title, description, icon, link, badge, color }: Pr
           <Link href={link} target="_blank" rel="noopener noreferrer">
             <Button
               variant="outline"
-              className={`${colors.border} text-white hover:bg-white/5 transition-all duration-300 group/btn`}
+              className={`${colors.border}  bg-white/5 transition-all duration-300 group/btn`}
             >
               Learn More
               <ExternalLink className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />

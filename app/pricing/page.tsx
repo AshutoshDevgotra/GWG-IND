@@ -113,7 +113,7 @@ export default function PricingPage() {
             <h1 className="text-4xl font-bold text-black mb-4">
               Transparent Pricing for Your Growth
             </h1>
-            <p className="text-xl text-black/80 max-w-2xl mx-auto">
+            <p className="text-xl text-white max-w-2xl mx-auto">
               Choose the perfect plan to transform your brand and accelerate your business growth
             </p>
           </div>
@@ -216,7 +216,7 @@ export default function PricingPage() {
           <h2 className="text-3xl font-bold text-black mb-4">
             Ready to Transform Your Brand?
           </h2>
-          <p className="text-xl text-black/80 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-white mb-8 max-w-2xl mx-auto">
             Join thousands of businesses that have already elevated their brand with our services
           </p>
           <div className="flex justify-center gap-4">
