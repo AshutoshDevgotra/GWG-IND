@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://growwithgarry.in
+
+# Sitemaps
+Sitemap: https://growwithgarry.in/sitemap.xml
