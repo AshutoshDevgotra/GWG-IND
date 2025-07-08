@@ -1022,7 +1022,7 @@ export default function Home() {
               <h3 className="font-bold text-lg mb-6">Services</h3>
               <ul className="space-y-4">
                 <li>
-                  <Link href="#services" className="text-gray-400 hover:text-white transition-colors">
+                  <Link href="/" className="text-gray-400 hover:text-white transition-colors">
                     Landing Pages
                   </Link>
                 </li>
@@ -1032,13 +1032,18 @@ export default function Home() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="#services" className="text-gray-400 hover:text-white transition-colors">
+                  <Link href="/services" className="text-gray-400 hover:text-white transition-colors">
                     SaaS Development
                   </Link>
                 </li>
                 <li>
-                  <Link href="#services" className="text-gray-400 hover:text-white transition-colors">
+                  <Link href="chatbots" className="text-gray-400 hover:text-white transition-colors">
                     AI Chatbots
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/blog" className="text-gray-400 hover:text-white transition-colors">
+                    Blogs
                   </Link>
                 </li>
               </ul>
