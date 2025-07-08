@@ -1008,7 +1008,7 @@ export default function Home() {
   </a>
 
   <a
-    href="https://youtube.com/@growwithgarry"
+    href="https://youtube.com/@ashutoshdevgotra"
     target="_blank"
     rel="noopener noreferrer"
     className="h-10 w-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-red-600 transition-colors"
