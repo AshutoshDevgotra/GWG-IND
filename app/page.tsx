@@ -186,7 +186,7 @@ export default function Home() {
               </Button>
               <Button
                 variant="outline"
-                className="border-white/10  hover:bg-white/5 text-lg py-6 px-8 rounded-xl transition-all duration-300"
+                className="border-white/10 bg-white/5 text-lg py-6 px-8 rounded-xl transition-all duration-300"
                 onClick={handleInstantCallClick}
               >
                 <Headphones className="mr-2 h-5 w-5" />
