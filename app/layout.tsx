@@ -1,5 +1,3 @@
-"use client";
-
 import './globals.css';
 import { Inter } from 'next/font/google';
 import { AuthButton } from '@/components/auth-button';
@@ -16,20 +14,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <head>
-          <meta name="facebook-domain-verification" content="jvmxewrxcmz4z577s2uv19cwdm31zl" />
-        </head>
-        
-        <nav className="fixed w-full bg-black backdrop-blur-md shadow-lg z-50 border-b border-white/20">
+      <head>
+        <meta name="facebook-domain-verification" content="jvmxewrxcmz4z577s2uv19cwdm31zl" />
+        <link rel="icon" href="/favicon.ico" />
+        <title>Grow With Garry</title>
+      </head>
 
+      <body className={inter.className}>
+        <nav className="fixed w-full bg-black backdrop-blur-md shadow-lg z-50 border-b border-white/20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between h-16 items-center">
               
               {/* Logo with link to homepage */}
               <Link href="/" className="flex items-center gap-2">
                 <Image src="/logo.png" alt="GwG Logo" width={40} height={40} className='rounded-full' />
-                
               </Link>
 
               {/* Navbar Links */}
