@@ -145,7 +145,7 @@ export function AuthButton() {
       {user ? (
         <Button
           variant="outline"
-          className="text-black  bg-grey/10 hover:text-black hover:bg-white"
+          className="text-black  bg-grey/10 hover:text-black bg-white"
           onClick={handleSignOut}
           disabled={loading}
         >
