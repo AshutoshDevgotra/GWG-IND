@@ -140,7 +140,7 @@ export default function ResumePage() {
             </div>
             {/* Download CTA */}
             <a
-              href="/CV/AI_RESUME_2026.pdf"
+              href="/CV/ASHUTOSHDEVGOTRA.pdf"
               className="mt-2 inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md shadow-lg hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:ring-offset-slate-950"
             >
               <Download className="w-4 h-4 mr-2" />
